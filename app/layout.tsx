@@ -13,7 +13,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="bg-bg-primary text-text-primary min-h-screen">
+      <body className="min-h-screen" style={{ 
+        backgroundColor: '#0d1117', 
+        color: '#c9d1d9',
+        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+      }}>
         {children}
       </body>
     </html>

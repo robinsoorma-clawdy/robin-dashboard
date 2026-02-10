@@ -14,7 +14,6 @@ export default function Home() {
   useEffect(() => {
     fetchTasks()
     
-    // Subscribe to real-time changes
     const subscription = supabase
       .channel('tasks')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'tasks' }, fetchTasks)
@@ -46,9 +45,25 @@ export default function Home() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p className="text-text-secondary">Loading dashboard...</p>
+        <p style={{ color: '#8b949e' }}>Loading dashboard...</p>
       </div>
     )
+  }
+
+  const tabButtonStyle = (isActive: boolean) => ({
+    padding: '8px 16px',
+    borderRadius: '8px',
+    border: 'none',
+    cursor: 'pointer',
+    backgroundColor: isActive ? '#58a6ff' : '#161b22',
+    color: isActive ? '#fff' : '#8b949e',
+  })
+
+  const cardStyle = {
+    backgroundColor: '#161b22',
+    borderRadius: '12px',
+    padding: '24px',
+    border: '1px solid #30363d',
   }
 
   return (
@@ -66,11 +81,7 @@ export default function Home() {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`px-4 py-2 rounded-lg transition-colors ${
-                activeTab === tab.id
-                  ? 'bg-accent text-white'
-                  : 'bg-bg-secondary text-text-secondary hover:bg-bg-tertiary'
-              }`}
+              style={tabButtonStyle(activeTab === tab.id)}
             >
               {tab.label}
             </button>
@@ -101,15 +112,15 @@ export default function Home() {
         )}
 
         {activeTab === 'activity' && (
-          <div className="bg-bg-secondary rounded-xl p-6 border border-[var(--border)]">
+          <div style={cardStyle}>
             <h2 className="text-xl font-semibold mb-4">Recent Activity</h2>
             <div className="space-y-4">
-              <div className="flex items-center gap-4 p-3 bg-bg-tertiary rounded-lg">
-                <span className="text-accent">08:00</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '12px', backgroundColor: '#21262d', borderRadius: '8px' }}>
+                <span style={{ color: '#58a6ff' }}>08:00</span>
                 <span>Daily self-audit completed</span>
               </div>
-              <div className="flex items-center gap-4 p-3 bg-bg-tertiary rounded-lg">
-                <span className="text-accent">07:00</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '12px', backgroundColor: '#21262d', borderRadius: '8px' }}>
+                <span style={{ color: '#58a6ff' }}>07:00</span>
                 <span>Morning briefing delivered</span>
               </div>
             </div>
@@ -117,20 +128,20 @@ export default function Home() {
         )}
 
         {activeTab === 'memory' && (
-          <div className="bg-bg-secondary rounded-xl p-6 border border-[var(--border)]">
+          <div style={cardStyle}>
             <h2 className="text-xl font-semibold mb-4">Key Memories</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="bg-bg-tertiary p-4 rounded-lg">
-                <h3 className="text-accent font-medium mb-2">💼 Work</h3>
-                <ul className="space-y-1 text-text-secondary">
+              <div style={{ backgroundColor: '#21262d', padding: '16px', borderRadius: '8px' }}>
+                <h3 style={{ color: '#58a6ff', fontWeight: 500, marginBottom: '8px' }}>💼 Work</h3>
+                <ul style={{ color: '#8b949e', lineHeight: 1.6 }}>
                   <li>SWE at bank in Perth</li>
                   <li>Promotion incoming (Feb 2026)</li>
                   <li>$80k → ~$130k base</li>
                 </ul>
               </div>
-              <div className="bg-bg-tertiary p-4 rounded-lg">
-                <h3 className="text-accent font-medium mb-2">🎯 Goals</h3>
-                <ul className="space-y-1 text-text-secondary">
+              <div style={{ backgroundColor: '#21262d', padding: '16px', borderRadius: '8px' }}>
+                <h3 style={{ color: '#58a6ff', fontWeight: 500, marginBottom: '8px' }}>🎯 Goals</h3>
+                <ul style={{ color: '#8b949e', lineHeight: 1.6 }}>
                   <li>Buy house late 2026</li>
                   <li>AWS certs (Cloud + Dev)</li>
                   <li>Launch recipe app</li>
@@ -141,10 +152,19 @@ export default function Home() {
         )}
 
         {activeTab === 'notes' && (
-          <div className="bg-bg-secondary rounded-xl p-6 border border-[var(--border)]">
+          <div style={cardStyle}>
             <h2 className="text-xl font-semibold mb-4">Quick Notes</h2>
             <textarea
-              className="w-full h-32 bg-bg-tertiary border border-[var(--border)] rounded-lg p-4 text-text-primary resize-none focus:outline-none focus:border-accent"
+              style={{
+                width: '100%',
+                height: '128px',
+                backgroundColor: '#21262d',
+                border: '1px solid #30363d',
+                borderRadius: '8px',
+                padding: '16px',
+                color: '#c9d1d9',
+                resize: 'none',
+              }}
               placeholder="Type a note..."
             />
           </div>

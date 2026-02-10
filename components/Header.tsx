@@ -8,12 +8,20 @@ export default function Header() {
   })
 
   return (
-    <header className="text-center py-8 border-b border-[var(--border)]">
-      <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-accent to-purple-400 bg-clip-text text-transparent">
+    <header style={{ textAlign: 'center', padding: '32px 0', borderBottom: '1px solid #30363d' }}>
+      <h1 style={{ 
+        fontSize: '2.25rem', 
+        fontWeight: 'bold', 
+        marginBottom: '8px',
+        background: 'linear-gradient(90deg, #58a6ff, #a371f7)',
+        WebkitBackgroundClip: 'text',
+        WebkitTextFillColor: 'transparent',
+        backgroundClip: 'text',
+      }}>
         🎯 Robin&apos;s Mission Control
       </h1>
-      <p className="text-text-secondary">Track tasks, projects, and daily activities</p>
-      <p className="text-text-secondary text-sm mt-2">{dateStr}</p>
+      <p style={{ color: '#8b949e' }}>Track tasks, projects, and daily activities</p>
+      <p style={{ color: '#8b949e', fontSize: '0.875rem', marginTop: '8px' }}>{dateStr}</p>
     </header>
   )
 }

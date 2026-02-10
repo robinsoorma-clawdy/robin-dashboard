@@ -52,22 +52,35 @@ export default function TaskColumn({ title, status, tasks, onTaskAdded }: TaskCo
   }
 
   const categoryColors: Record<string, string> = {
-    work: 'bg-accent',
-    project: 'bg-purple-500',
-    career: 'bg-green-500',
-    finance: 'bg-yellow-500',
-    personal: 'bg-gray-500',
+    work: '#58a6ff',
+    project: '#a371f7',
+    career: '#238636',
+    finance: '#d29922',
+    personal: '#6e7681',
+  }
+
+  const columnStyle = {
+    backgroundColor: '#161b22',
+    borderRadius: '12px',
+    padding: '16px',
+    border: '1px solid #30363d',
   }
 
   return (
-    <div className="bg-bg-secondary rounded-xl p-4 border border-[var(--border)]">
-      <h3 className="text-lg font-semibold mb-4">{title}</h3>
+    <div style={columnStyle}>
+      <h3 style={{ fontSize: '1.125rem', fontWeight: 600, marginBottom: '16px' }}>{title}</h3>
 
-      <div className="space-y-3 mb-4">
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '16px' }}>
         {tasks.map((task) => (
           <div
             key={task.id}
-            className="bg-bg-tertiary p-4 rounded-lg border border-[var(--border)] hover:border-accent transition-colors cursor-pointer"
+            style={{
+              backgroundColor: '#21262d',
+              padding: '16px',
+              borderRadius: '8px',
+              border: '1px solid #30363d',
+              cursor: 'pointer',
+            }}
             onClick={() => {
               const nextStatus =
                 status === 'todo'
@@ -79,15 +92,27 @@ export default function TaskColumn({ title, status, tasks, onTaskAdded }: TaskCo
             }}
           >
             <span
-              className={`inline-block px-2 py-1 rounded text-xs font-medium text-white mb-2 ${
-                categoryColors[task.category] || 'bg-gray-500'
-              }`}
+              style={{
+                display: 'inline-block',
+                padding: '4px 8px',
+                borderRadius: '4px',
+                fontSize: '0.75rem',
+                fontWeight: 500,
+                color: '#fff',
+                backgroundColor: categoryColors[task.category] || '#6e7681',
+                marginBottom: '8px',
+              }}
             >
               {task.category}
             </span>
-            <p className={status === 'done' ? 'line-through opacity-60' : ''}>{task.title}</p>
+            <p style={{ 
+              textDecoration: status === 'done' ? 'line-through' : 'none',
+              opacity: status === 'done' ? 0.6 : 1,
+            }}>
+              {task.title}
+            </p>
             {task.due_date && (
-              <p className="text-xs text-text-secondary mt-2">Due: {task.due_date}</p>
+              <p style={{ fontSize: '0.75rem', color: '#8b949e', marginTop: '8px' }}>Due: {task.due_date}</p>
             )}
           </div>
         ))}
@@ -96,19 +121,35 @@ export default function TaskColumn({ title, status, tasks, onTaskAdded }: TaskCo
       {status !== 'done' && (
         <>
           {showAddForm ? (
-            <form onSubmit={addTask} className="space-y-2">
+            <form onSubmit={addTask} style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               <input
                 type="text"
                 value={newTaskTitle}
                 onChange={(e) => setNewTaskTitle(e.target.value)}
                 placeholder="Task title..."
-                className="w-full bg-bg-tertiary border border-[var(--border)] rounded px-3 py-2 text-sm focus:outline-none focus:border-accent"
+                style={{
+                  width: '100%',
+                  backgroundColor: '#21262d',
+                  border: '1px solid #30363d',
+                  borderRadius: '6px',
+                  padding: '8px 12px',
+                  fontSize: '0.875rem',
+                  color: '#c9d1d9',
+                }}
                 autoFocus
               />
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className="w-full bg-bg-tertiary border border-[var(--border)] rounded px-3 py-2 text-sm"
+                style={{
+                  width: '100%',
+                  backgroundColor: '#21262d',
+                  border: '1px solid #30363d',
+                  borderRadius: '6px',
+                  padding: '8px 12px',
+                  fontSize: '0.875rem',
+                  color: '#c9d1d9',
+                }}
               >
                 <option value="work">Work</option>
                 <option value="project">Project</option>
@@ -116,17 +157,35 @@ export default function TaskColumn({ title, status, tasks, onTaskAdded }: TaskCo
                 <option value="finance">Finance</option>
                 <option value="personal">Personal</option>
               </select>
-              <div className="flex gap-2">
+              <div style={{ display: 'flex', gap: '8px' }}>
                 <button
                   type="submit"
-                  className="flex-1 bg-accent text-white rounded px-3 py-2 text-sm hover:bg-accent-hover transition-colors"
+                  style={{
+                    flex: 1,
+                    backgroundColor: '#58a6ff',
+                    color: '#fff',
+                    border: 'none',
+                    borderRadius: '6px',
+                    padding: '8px',
+                    fontSize: '0.875rem',
+                    cursor: 'pointer',
+                  }}
                 >
                   Add
                 </button>
                 <button
                   type="button"
                   onClick={() => setShowAddForm(false)}
-                  className="flex-1 bg-bg-tertiary rounded px-3 py-2 text-sm hover:bg-bg-secondary transition-colors"
+                  style={{
+                    flex: 1,
+                    backgroundColor: '#21262d',
+                    color: '#c9d1d9',
+                    border: 'none',
+                    borderRadius: '6px',
+                    padding: '8px',
+                    fontSize: '0.875rem',
+                    cursor: 'pointer',
+                  }}
                 >
                   Cancel
                 </button>
@@ -135,7 +194,15 @@ export default function TaskColumn({ title, status, tasks, onTaskAdded }: TaskCo
           ) : (
             <button
               onClick={() => setShowAddForm(true)}
-              className="w-full border-2 border-dashed border-[var(--border)] rounded-lg py-2 text-text-secondary hover:border-accent hover:text-accent transition-colors"
+              style={{
+                width: '100%',
+                border: '2px dashed #30363d',
+                borderRadius: '8px',
+                padding: '8px',
+                color: '#8b949e',
+                backgroundColor: 'transparent',
+                cursor: 'pointer',
+              }}
             >
               + Add Task
             </button>
