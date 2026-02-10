@@ -11,6 +11,7 @@ interface TaskColumnProps {
   tasks: Task[]
   count: number
   onTaskAdded: () => void
+  onTaskClick: (task: Task) => void
   onDragStart: (task: Task) => void
   onDragEnd: () => void
   onDragOver: (e: React.DragEvent, status: string) => void
@@ -25,6 +26,7 @@ export default function TaskColumn({
   tasks,
   count,
   onTaskAdded,
+  onTaskClick,
   onDragStart,
   onDragEnd,
   onDragOver,
@@ -50,6 +52,7 @@ export default function TaskColumn({
   const [validationError, setValidationError] = useState('')
 
   const editFormRef = useRef<HTMLDivElement>(null)
+  const isDraggingRef = useRef(false)
 
   // Click outside to cancel editing
   useEffect(() => {
@@ -581,8 +584,20 @@ export default function TaskColumn({
               /* ---- Normal Task Card ---- */
               <div
                 draggable
-                onDragStart={() => onDragStart(task)}
-                onDragEnd={onDragEnd}
+                onDragStart={() => {
+                  isDraggingRef.current = true
+                  onDragStart(task)
+                }}
+                onDragEnd={() => {
+                  onDragEnd()
+                  // Reset after a short delay so the click event doesn't fire
+                  setTimeout(() => { isDraggingRef.current = false }, 0)
+                }}
+                onClick={() => {
+                  if (!isDraggingRef.current) {
+                    onTaskClick(task)
+                  }
+                }}
                 className="task-card animate-slide-in"
                 style={{
                   backgroundColor: 'var(--bg-tertiary)',
