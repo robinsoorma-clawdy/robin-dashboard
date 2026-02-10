@@ -31,3 +31,16 @@ export interface TaskComment {
   created_at: string
   updated_at?: string
 }
+
+export type NetWorthCategory = 'salary' | 'super' | 'investments' | 'cash' | 'crypto' | 'property' | 'other'
+
+export interface NetWorthEntry {
+  id: string
+  date: string
+  category: NetWorthCategory
+  amount: number
+  notes?: string
+  created_by: string
+  created_at: string
+  updated_at: string
+}
