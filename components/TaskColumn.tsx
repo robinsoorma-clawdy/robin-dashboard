@@ -36,6 +36,13 @@ export default function TaskColumn({
   const [newTaskDesc, setNewTaskDesc] = useState('')
   const [category, setCategory] = useState('work')
   const [priority, setPriority] = useState('medium')
+  
+  // Edit mode state
+  const [editingTask, setEditingTask] = useState<string | null>(null)
+  const [editTitle, setEditTitle] = useState('')
+  const [editDesc, setEditDesc] = useState('')
+  const [editCategory, setEditCategory] = useState('work')
+  const [editPriority, setEditPriority] = useState('medium')
 
   const addTask = async (e: React.FormEvent) => {
     e.preventDefault()
