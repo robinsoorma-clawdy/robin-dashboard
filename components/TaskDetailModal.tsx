@@ -414,13 +414,19 @@ export default function TaskDetailModal({ task, onClose }: TaskDetailModalProps)
             color: 'var(--text-muted)',
           }}>
             <span>Created {new Date(task.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
-            {task.due_date && (
-              <span style={{
-                color: new Date(task.due_date) < new Date() ? 'var(--danger)' : 'var(--text-muted)',
-              }}>
-                Due {new Date(task.due_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-              </span>
-            )}
+            {task.due_date && (() => {
+              const now = new Date()
+              const due = new Date(task.due_date)
+              const isOverdue = due < now
+              const isNearDue = !isOverdue && (due.getTime() - now.getTime()) < 24 * 60 * 60 * 1000
+              const color = isOverdue ? 'var(--danger)' : isNearDue ? 'var(--warning)' : 'var(--text-muted)'
+              
+              return (
+                <span style={{ color, fontWeight: isOverdue || isNearDue ? 600 : 400 }}>
+                  Due {new Date(task.due_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                </span>
+              )
+            })()}
             <span>by {task.created_by}</span>
           </div>
         </div>

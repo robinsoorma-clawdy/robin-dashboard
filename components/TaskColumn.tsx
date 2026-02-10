@@ -37,6 +37,7 @@ export default function TaskColumn({
   const [showAddForm, setShowAddForm] = useState(false)
   const [newTaskTitle, setNewTaskTitle] = useState('')
   const [newTaskDesc, setNewTaskDesc] = useState('')
+  const [newTaskDueDate, setNewTaskDueDate] = useState('')
   const [category, setCategory] = useState('work')
   const [priority, setPriority] = useState('medium')
   
@@ -90,6 +91,7 @@ export default function TaskColumn({
         status,
         category,
         priority,
+        due_date: newTaskDueDate || null,
         created_by: 'robin',
       },
     ]).select()
@@ -106,6 +108,7 @@ export default function TaskColumn({
       })
       setNewTaskTitle('')
       setNewTaskDesc('')
+      setNewTaskDueDate('')
       setShowAddForm(false)
       onTaskAdded()
     }
@@ -716,14 +719,23 @@ export default function TaskColumn({
                     }}>
                       R
                     </div>
-                    {task.due_date && (
-                      <span style={{ 
-                        fontSize: '12px', 
-                        color: new Date(task.due_date) < new Date() ? 'var(--danger)' : 'var(--text-muted)'
-                      }}>
-                        📅 {new Date(task.due_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                      </span>
-                    )}
+                    {task.due_date && (() => {
+                      const now = new Date()
+                      const due = new Date(task.due_date)
+                      const isOverdue = due < now
+                      const isNearDue = !isOverdue && (due.getTime() - now.getTime()) < 24 * 60 * 60 * 1000
+                      const color = isOverdue ? 'var(--danger)' : isNearDue ? 'var(--warning)' : 'var(--text-muted)'
+                      
+                      return (
+                        <span style={{ 
+                          fontSize: '12px', 
+                          color: color,
+                          fontWeight: isOverdue || isNearDue ? 600 : 400
+                        }}>
+                          📅 {new Date(task.due_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                        </span>
+                      )
+                    })()}
                   </div>
 
                   <div style={{ display: 'flex', gap: '4px' }}>
@@ -874,6 +886,34 @@ export default function TaskColumn({
                   <option value="high">🔴 High</option>
                 </select>
               </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                <label style={{
+                  fontSize: '11px',
+                  fontWeight: 600,
+                  color: 'var(--text-muted)',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.5px',
+                }}>
+                  Due Date (Optional)
+                </label>
+                <input
+                  type="date"
+                  value={newTaskDueDate}
+                  onChange={(e) => setNewTaskDueDate(e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: '10px 12px',
+                    backgroundColor: 'var(--bg-tertiary)',
+                    border: '1px solid var(--border)',
+                    borderRadius: 'var(--radius-md)',
+                    color: 'var(--text-primary)',
+                    fontSize: '13px',
+                    cursor: 'pointer',
+                    colorScheme: 'dark',
+                  }}
+                />
+              </div>
               
               <div style={{ display: 'flex', gap: '8px', marginTop: '4px' }}>
                 <button
@@ -905,6 +945,7 @@ export default function TaskColumn({
                     setShowAddForm(false)
                     setNewTaskTitle('')
                     setNewTaskDesc('')
+                    setNewTaskDueDate('')
                   }}
                   style={{
                     flex: 1,
