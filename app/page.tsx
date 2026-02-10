@@ -127,21 +127,14 @@ export default function Home() {
     setDragOverColumn(status)
   }, [])
 
-  const handleDrop = useCallback(async (e: React.DragEvent, newStatus: string) => {
-    e.preventDefault()
-    setDragOverColumn(null)
-    
-    if (!draggedTask || draggedTask.status === newStatus) {
-      setDraggedTask(null)
-      return
-    }
-
-    const oldStatus = draggedTask.status
+  const moveTask = useCallback(async (task: Task, newStatus: string) => {
+    const oldStatus = task.status
+    if (oldStatus === newStatus) return
 
     const { error } = await supabase
       .from('tasks')
       .update({ status: newStatus, updated_at: new Date().toISOString() })
-      .eq('id', draggedTask.id)
+      .eq('id', task.id)
 
     if (error) {
       console.error('Error moving task:', error)
@@ -149,15 +142,23 @@ export default function Home() {
       const activityType = newStatus === 'done' ? 'task_completed' : 'task_moved'
       await logActivity({
         type: activityType,
-        task_id: draggedTask.id,
-        task_title: draggedTask.title,
+        task_id: task.id,
+        task_title: task.title,
         from_status: oldStatus,
         to_status: newStatus,
       })
       fetchTasks()
     }
+  }, [fetchTasks])
+
+  const handleDrop = useCallback(async (e: React.DragEvent, newStatus: string) => {
+    e.preventDefault()
+    setDragOverColumn(null)
+    
+    if (!draggedTask) return
+    await moveTask(draggedTask, newStatus)
     setDraggedTask(null)
-  }, [draggedTask])
+  }, [draggedTask, moveTask])
 
   const filteredTasks = tasks.filter(task => {
     const matchesFilter = filter === 'all' || task.category === filter
@@ -310,6 +311,7 @@ export default function Home() {
                 onDragEnd={handleDragEnd}
                 onDragOver={handleDragOver}
                 onDrop={handleDrop}
+                onMoveTask={moveTask}
                 isDragOver={dragOverColumn === 'todo'}
                 draggedTask={draggedTask}
               />
@@ -324,6 +326,7 @@ export default function Home() {
                 onDragEnd={handleDragEnd}
                 onDragOver={handleDragOver}
                 onDrop={handleDrop}
+                onMoveTask={moveTask}
                 isDragOver={dragOverColumn === 'in_progress'}
                 draggedTask={draggedTask}
               />
@@ -338,6 +341,7 @@ export default function Home() {
                 onDragEnd={handleDragEnd}
                 onDragOver={handleDragOver}
                 onDrop={handleDrop}
+                onMoveTask={moveTask}
                 isDragOver={dragOverColumn === 'done'}
                 draggedTask={draggedTask}
               />
