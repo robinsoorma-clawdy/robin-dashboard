@@ -38,8 +38,8 @@ export default function Home() {
       .subscribe()
 
     const activitySubscription = supabase
-      .channel('activity_logs')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'activity_logs' }, () => {
+      .channel('tasks')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'tasks' }, () => {
         if (activeTab === 'activity') {
           loadActivities()
         }
@@ -734,11 +734,50 @@ export default function Home() {
             backgroundColor: 'var(--bg-secondary)',
             borderRadius: 'var(--radius-lg)',
             padding: '24px',
-            border: '1px solid var(--border)',
-            textAlign: 'center',
-            color: 'var(--text-muted)'
+            border: '1px solid var(--border)'
           }}>
-            <p>Coming soon...</p>
+            <h2 style={{ fontSize: '20px', fontWeight: 600, marginBottom: '20px', color: 'var(--text-primary)' }}>
+              Key Memories
+            </h2>
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+              gap: '16px'
+            }}>
+              {[
+                { icon: '💼', title: 'Work', items: ['SWE at bank in Perth', 'Promotion incoming (Feb 2026)', '$80k → ~$130k base'] },
+                { icon: '🎯', title: 'Goals', items: ['Buy house late 2026', 'AWS certs (Cloud + Dev)', 'Launch recipe app'] },
+                { icon: '🏠', title: 'Home Buying', items: ['$40k deposit saved (cash + super)', 'Waiting for promotion', 'Perth market research'] },
+                { icon: '🤖', title: 'AI Stack', items: ['Clawdius (Kimi + Antigravity)', '5 Telegram groups', 'Daily briefings at 7am'] },
+              ].map((card, i) => (
+                <div key={i} style={{
+                  backgroundColor: 'var(--bg-tertiary)',
+                  padding: '20px',
+                  borderRadius: 'var(--radius-md)',
+                  border: '1px solid var(--border-subtle)'
+                }}>
+                  <h3 style={{ 
+                    color: 'var(--accent)', 
+                    fontWeight: 600, 
+                    marginBottom: '12px',
+                    fontSize: '16px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px'
+                  }}>
+                    {card.icon} {card.title}
+                  </h3>
+                  <ul style={{ color: 'var(--text-secondary)', lineHeight: 1.8, fontSize: '14px' }}>
+                    {card.items.map((item, j) => (
+                      <li key={j} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span style={{ color: 'var(--accent)', fontSize: '10px' }}>●</span>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </main>
