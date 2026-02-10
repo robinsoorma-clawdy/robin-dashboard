@@ -13,11 +13,12 @@ export interface Task {
 
 export interface Activity {
   id: string
-  type: 'task_created' | 'task_moved' | 'task_completed'
-  task_id: string
+  type: 'task_created' | 'task_moved' | 'task_completed' | 'task_deleted' | 'task_updated'
+  task_id: string | null
   task_title: string
   from_status?: string
   to_status?: string
+  details?: string
   created_by: string
   created_at: string
 }

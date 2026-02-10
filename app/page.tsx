@@ -2,9 +2,10 @@
 
 import { useEffect, useState, useCallback } from 'react'
 import { supabase } from '@/lib/supabase'
-import { Task } from '@/lib/types'
+import { Task, Activity } from '@/lib/types'
 import TaskColumn from '@/components/TaskColumn'
 import Header from '@/components/Header'
+import { logActivity, fetchActivityLogs } from '@/lib/activity'
 
 export default function Home() {
   const [tasks, setTasks] = useState<Task[]>([])
@@ -19,6 +20,10 @@ export default function Home() {
   const [noteContent, setNoteContent] = useState('')
   const [noteSaving, setNoteSaving] = useState(false)
   const [noteLastSaved, setNoteLastSaved] = useState<Date | null>(null)
+
+  // Activity state
+  const [activities, setActivities] = useState<Activity[]>([])
+  const [activitiesLoading, setActivitiesLoading] = useState(false)
 
   useEffect(() => {
     fetchTasks()
@@ -64,6 +69,19 @@ export default function Home() {
     }
   }
 
+  const loadActivities = async () => {
+    setActivitiesLoading(true)
+    const data = await fetchActivityLogs(50)
+    setActivities(data)
+    setActivitiesLoading(false)
+  }
+
+  useEffect(() => {
+    if (activeTab === 'activity') {
+      loadActivities()
+    }
+  }, [activeTab])
+
   const saveNotes = async () => {
     setNoteSaving(true)
     
@@ -106,6 +124,8 @@ export default function Home() {
       return
     }
 
+    const oldStatus = draggedTask.status
+
     const { error } = await supabase
       .from('tasks')
       .update({ status: newStatus, updated_at: new Date().toISOString() })
@@ -114,6 +134,14 @@ export default function Home() {
     if (error) {
       console.error('Error moving task:', error)
     } else {
+      const activityType = newStatus === 'done' ? 'task_completed' : 'task_moved'
+      await logActivity({
+        type: activityType,
+        task_id: draggedTask.id,
+        task_title: draggedTask.title,
+        from_status: oldStatus,
+        to_status: newStatus,
+      })
       fetchTasks()
     }
     setDraggedTask(null)
@@ -384,7 +412,287 @@ export default function Home() {
           </div>
         )}
 
-        {(activeTab === 'activity' || activeTab === 'memory') && (
+        {activeTab === 'activity' && (
+          <div style={{
+            backgroundColor: 'var(--bg-secondary)',
+            borderRadius: 'var(--radius-lg)',
+            padding: '24px',
+            border: '1px solid var(--border)',
+          }}>
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: '20px',
+              paddingBottom: '12px',
+              borderBottom: '1px solid var(--border-subtle)',
+            }}>
+              <h2 style={{
+                fontSize: '20px',
+                fontWeight: 600,
+                color: 'var(--text-primary)',
+                margin: 0,
+              }}>
+                Recent Activity
+              </h2>
+              <button
+                onClick={loadActivities}
+                disabled={activitiesLoading}
+                style={{
+                  padding: '8px 16px',
+                  backgroundColor: 'var(--bg-tertiary)',
+                  color: 'var(--text-secondary)',
+                  border: '1px solid var(--border)',
+                  borderRadius: 'var(--radius-md)',
+                  fontSize: '13px',
+                  fontWeight: 500,
+                  cursor: activitiesLoading ? 'not-allowed' : 'pointer',
+                  opacity: activitiesLoading ? 0.7 : 1,
+                  transition: 'all 0.2s',
+                }}
+              >
+                {activitiesLoading ? 'Loading...' : 'Refresh'}
+              </button>
+            </div>
+
+            {activitiesLoading && activities.length === 0 ? (
+              <div style={{
+                textAlign: 'center',
+                padding: '40px',
+                color: 'var(--text-muted)',
+              }}>
+                <div style={{
+                  width: '32px',
+                  height: '32px',
+                  border: '3px solid var(--bg-tertiary)',
+                  borderTopColor: 'var(--accent)',
+                  borderRadius: '50%',
+                  animation: 'spin 1s linear infinite',
+                  margin: '0 auto 12px',
+                }} />
+                Loading activity...
+              </div>
+            ) : activities.length === 0 ? (
+              <div style={{
+                textAlign: 'center',
+                padding: '40px',
+                color: 'var(--text-muted)',
+                fontSize: '14px',
+              }}>
+                <p style={{ fontSize: '32px', marginBottom: '12px' }}>📊</p>
+                <p>No activity yet. Create, move, or delete tasks to see activity here.</p>
+              </div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                {activities.map((activity) => {
+                  const getIcon = () => {
+                    switch (activity.type) {
+                      case 'task_created': return '✨'
+                      case 'task_moved': return '➡️'
+                      case 'task_completed': return '✅'
+                      case 'task_deleted': return '🗑️'
+                      case 'task_updated': return '✏️'
+                      default: return '📌'
+                    }
+                  }
+
+                  const getLabel = () => {
+                    switch (activity.type) {
+                      case 'task_created': return 'Created'
+                      case 'task_moved': return 'Moved'
+                      case 'task_completed': return 'Completed'
+                      case 'task_deleted': return 'Deleted'
+                      case 'task_updated': return 'Updated'
+                      default: return activity.type
+                    }
+                  }
+
+                  const getColor = () => {
+                    switch (activity.type) {
+                      case 'task_created': return 'var(--accent)'
+                      case 'task_moved': return 'var(--warning)'
+                      case 'task_completed': return 'var(--success)'
+                      case 'task_deleted': return 'var(--danger)'
+                      case 'task_updated': return 'var(--text-secondary)'
+                      default: return 'var(--text-muted)'
+                    }
+                  }
+
+                  const formatStatus = (s: string) => {
+                    switch (s) {
+                      case 'todo': return 'To Do'
+                      case 'in_progress': return 'In Progress'
+                      case 'done': return 'Done'
+                      default: return s
+                    }
+                  }
+
+                  const timeAgo = (dateStr: string) => {
+                    const now = new Date()
+                    const date = new Date(dateStr)
+                    const seconds = Math.floor((now.getTime() - date.getTime()) / 1000)
+
+                    if (seconds < 60) return 'just now'
+                    const minutes = Math.floor(seconds / 60)
+                    if (minutes < 60) return `${minutes}m ago`
+                    const hours = Math.floor(minutes / 60)
+                    if (hours < 24) return `${hours}h ago`
+                    const days = Math.floor(hours / 24)
+                    if (days < 7) return `${days}d ago`
+                    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+                  }
+
+                  return (
+                    <div
+                      key={activity.id}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'flex-start',
+                        gap: '12px',
+                        padding: '12px 8px',
+                        borderRadius: 'var(--radius-md)',
+                        transition: 'background-color 0.15s',
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = 'var(--bg-tertiary)'
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = 'transparent'
+                      }}
+                    >
+                      {/* Icon */}
+                      <div style={{
+                        width: '32px',
+                        height: '32px',
+                        borderRadius: '50%',
+                        backgroundColor: `${getColor()}15`,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: '14px',
+                        flexShrink: 0,
+                        marginTop: '2px',
+                      }}>
+                        {getIcon()}
+                      </div>
+
+                      {/* Content */}
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                          <span style={{
+                            fontSize: '12px',
+                            fontWeight: 600,
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.3px',
+                            color: getColor(),
+                            padding: '2px 8px',
+                            borderRadius: '10px',
+                            backgroundColor: `${getColor()}15`,
+                          }}>
+                            {getLabel()}
+                          </span>
+                          <span style={{
+                            fontSize: '14px',
+                            fontWeight: 500,
+                            color: 'var(--text-primary)',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap',
+                          }}>
+                            {activity.task_title}
+                          </span>
+                        </div>
+
+                        {/* Status change details */}
+                        {activity.from_status && activity.to_status && (
+                          <div style={{
+                            fontSize: '13px',
+                            color: 'var(--text-muted)',
+                            marginTop: '4px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                          }}>
+                            <span style={{
+                              padding: '1px 6px',
+                              borderRadius: '4px',
+                              backgroundColor: 'var(--bg-tertiary)',
+                              fontSize: '12px',
+                            }}>
+                              {formatStatus(activity.from_status)}
+                            </span>
+                            <span>→</span>
+                            <span style={{
+                              padding: '1px 6px',
+                              borderRadius: '4px',
+                              backgroundColor: 'var(--bg-tertiary)',
+                              fontSize: '12px',
+                            }}>
+                              {formatStatus(activity.to_status)}
+                            </span>
+                          </div>
+                        )}
+
+                        {/* Created-in status for new tasks */}
+                        {activity.type === 'task_created' && activity.to_status && !activity.from_status && (
+                          <div style={{
+                            fontSize: '13px',
+                            color: 'var(--text-muted)',
+                            marginTop: '4px',
+                          }}>
+                            Added to{' '}
+                            <span style={{
+                              padding: '1px 6px',
+                              borderRadius: '4px',
+                              backgroundColor: 'var(--bg-tertiary)',
+                              fontSize: '12px',
+                            }}>
+                              {formatStatus(activity.to_status)}
+                            </span>
+                          </div>
+                        )}
+
+                        {/* Deleted-from status */}
+                        {activity.type === 'task_deleted' && activity.from_status && (
+                          <div style={{
+                            fontSize: '13px',
+                            color: 'var(--text-muted)',
+                            marginTop: '4px',
+                          }}>
+                            Removed from{' '}
+                            <span style={{
+                              padding: '1px 6px',
+                              borderRadius: '4px',
+                              backgroundColor: 'var(--bg-tertiary)',
+                              fontSize: '12px',
+                            }}>
+                              {formatStatus(activity.from_status)}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Timestamp */}
+                      <div style={{
+                        fontSize: '12px',
+                        color: 'var(--text-muted)',
+                        whiteSpace: 'nowrap',
+                        flexShrink: 0,
+                        marginTop: '2px',
+                      }}
+                        title={new Date(activity.created_at).toLocaleString()}
+                      >
+                        {timeAgo(activity.created_at)}
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            )}
+          </div>
+        )}
+
+        {activeTab === 'memory' && (
           <div style={{
             backgroundColor: 'var(--bg-secondary)',
             borderRadius: 'var(--radius-lg)',

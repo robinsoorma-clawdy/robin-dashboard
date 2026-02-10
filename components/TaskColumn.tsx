@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { supabase } from '@/lib/supabase'
 import { Task } from '@/lib/types'
+import { logActivity } from '@/lib/activity'
 
 interface TaskColumnProps {
   title: string
@@ -79,7 +80,7 @@ export default function TaskColumn({
     e.preventDefault()
     if (!newTaskTitle.trim()) return
 
-    const { error } = await supabase.from('tasks').insert([
+    const { data, error } = await supabase.from('tasks').insert([
       {
         title: newTaskTitle,
         description: newTaskDesc,
@@ -88,11 +89,18 @@ export default function TaskColumn({
         priority,
         created_by: 'robin',
       },
-    ])
+    ]).select()
 
     if (error) {
       console.error('Error adding task:', error)
     } else {
+      const createdTask = data?.[0]
+      await logActivity({
+        type: 'task_created',
+        task_id: createdTask?.id || null,
+        task_title: newTaskTitle,
+        to_status: status,
+      })
       setNewTaskTitle('')
       setNewTaskDesc('')
       setShowAddForm(false)
@@ -100,7 +108,7 @@ export default function TaskColumn({
     }
   }
 
-  const deleteTask = async (taskId: string, e: React.MouseEvent) => {
+  const deleteTask = async (taskId: string, taskTitle: string, e: React.MouseEvent) => {
     e.stopPropagation()
     if (!confirm('Delete this task?')) return
     
@@ -108,6 +116,12 @@ export default function TaskColumn({
     if (error) {
       console.error('Error deleting task:', error)
     } else {
+      await logActivity({
+        type: 'task_deleted',
+        task_id: taskId,
+        task_title: taskTitle,
+        from_status: status,
+      })
       onTaskAdded()
     }
   }
@@ -146,6 +160,10 @@ export default function TaskColumn({
     setIsSaving(true)
     setValidationError('')
 
+    // Find the current task to detect status changes
+    const currentTask = tasks.find(t => t.id === taskId)
+    const oldStatus = currentTask?.status
+
     const { error } = await supabase
       .from('tasks')
       .update({
@@ -164,6 +182,17 @@ export default function TaskColumn({
       setValidationError('Failed to save changes. Please try again.')
       setIsSaving(false)
     } else {
+      // Log status change if it happened
+      if (oldStatus && oldStatus !== editStatus) {
+        const activityType = editStatus === 'done' ? 'task_completed' : 'task_moved'
+        await logActivity({
+          type: activityType,
+          task_id: taskId,
+          task_title: trimmedTitle,
+          from_status: oldStatus,
+          to_status: editStatus,
+        })
+      }
       cancelEdit()
       onTaskAdded()
     }
@@ -695,7 +724,7 @@ export default function TaskColumn({
 
                     {/* Delete Button */}
                     <button
-                      onClick={(e) => deleteTask(task.id, e)}
+                      onClick={(e) => deleteTask(task.id, task.title, e)}
                       style={{
                         padding: '6px',
                         backgroundColor: 'transparent',
