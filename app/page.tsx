@@ -29,15 +29,25 @@ export default function Home() {
     fetchTasks()
     fetchNotes()
     
-    const subscription = supabase
+    const tasksSubscription = supabase
       .channel('tasks')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'tasks' }, fetchTasks)
       .subscribe()
 
+    const activitySubscription = supabase
+      .channel('activity_logs')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'activity_logs' }, () => {
+        if (activeTab === 'activity') {
+          loadActivities()
+        }
+      })
+      .subscribe()
+
     return () => {
-      subscription.unsubscribe()
+      tasksSubscription.unsubscribe()
+      activitySubscription.unsubscribe()
     }
-  }, [])
+  }, [activeTab])
 
   const fetchTasks = async () => {
     const { data, error } = await supabase
@@ -668,6 +678,18 @@ export default function Home() {
                             }}>
                               {formatStatus(activity.from_status)}
                             </span>
+                          </div>
+                        )}
+
+                        {/* Details */}
+                        {activity.details && (
+                          <div style={{
+                            fontSize: '13px',
+                            color: 'var(--text-muted)',
+                            marginTop: '4px',
+                            fontStyle: 'italic',
+                          }}>
+                            {activity.details}
                           </div>
                         )}
                       </div>

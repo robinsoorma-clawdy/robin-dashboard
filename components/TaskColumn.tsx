@@ -182,7 +182,7 @@ export default function TaskColumn({
       setValidationError('Failed to save changes. Please try again.')
       setIsSaving(false)
     } else {
-      // Log status change if it happened
+      // Log status change or update
       if (oldStatus && oldStatus !== editStatus) {
         const activityType = editStatus === 'done' ? 'task_completed' : 'task_moved'
         await logActivity({
@@ -191,6 +191,21 @@ export default function TaskColumn({
           task_title: trimmedTitle,
           from_status: oldStatus,
           to_status: editStatus,
+        })
+      } else if (
+        currentTask && (
+          currentTask.title !== trimmedTitle ||
+          currentTask.description !== editDesc ||
+          currentTask.priority !== editPriority ||
+          currentTask.category !== editCategory ||
+          currentTask.due_date !== (editDueDate || null)
+        )
+      ) {
+        await logActivity({
+          type: 'task_updated',
+          task_id: taskId,
+          task_title: trimmedTitle,
+          details: 'Updated task details'
         })
       }
       cancelEdit()
