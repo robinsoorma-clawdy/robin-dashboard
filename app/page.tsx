@@ -14,9 +14,15 @@ export default function Home() {
   const [dragOverColumn, setDragOverColumn] = useState<string | null>(null)
   const [filter, setFilter] = useState('all')
   const [searchQuery, setSearchQuery] = useState('')
+  
+  // Notes state
+  const [noteContent, setNoteContent] = useState('')
+  const [noteSaving, setNoteSaving] = useState(false)
+  const [noteLastSaved, setNoteLastSaved] = useState<Date | null>(null)
 
   useEffect(() => {
     fetchTasks()
+    fetchNotes()
     
     const subscription = supabase
       .channel('tasks')
@@ -40,6 +46,41 @@ export default function Home() {
       setTasks(data || [])
     }
     setLoading(false)
+  }
+
+  const fetchNotes = async () => {
+    const { data, error } = await supabase
+      .from('notes')
+      .select('*')
+      .order('updated_at', { ascending: false })
+      .limit(1)
+      .single()
+    
+    if (error && error.code !== 'PGRST116') {
+      console.error('Error fetching notes:', error)
+    } else if (data) {
+      setNoteContent(data.content || '')
+      setNoteLastSaved(new Date(data.updated_at))
+    }
+  }
+
+  const saveNotes = async () => {
+    setNoteSaving(true)
+    
+    const { error } = await supabase
+      .from('notes')
+      .upsert({ 
+        content: noteContent,
+        updated_by: 'clawdius',
+        updated_at: new Date().toISOString()
+      })
+
+    if (error) {
+      console.error('Error saving notes:', error)
+    } else {
+      setNoteLastSaved(new Date())
+    }
+    setNoteSaving(false)
   }
 
   const handleDragStart = useCallback((task: Task) => {
@@ -88,8 +129,6 @@ export default function Home() {
   const progressTasks = filteredTasks.filter(t => t.status === 'in_progress')
   const doneTasks = filteredTasks.filter(t => t.status === 'done')
 
-  const categories = ['all', 'work', 'project', 'career', 'finance', 'personal']
-
   if (loading) {
     return (
       <div style={{ 
@@ -109,7 +148,7 @@ export default function Home() {
             animation: 'spin 1s linear infinite',
             margin: '0 auto 16px'
           }} />
-          <p style={{ color: 'var(--text-secondary)' }}>Loading dashboard...</p>
+          <p style={{ color: 'var(--text-secondary)' }}>Loading...</p>
         </div>
       </div>
     )
@@ -132,7 +171,6 @@ export default function Home() {
       <Header />
       
       <main style={{ maxWidth: '1400px', margin: '0 auto', padding: '24px 16px' }}>
-        {/* Navigation */}
         <nav style={{ 
           display: 'flex', 
           gap: '8px', 
@@ -161,7 +199,6 @@ export default function Home() {
 
         {activeTab === 'tasks' && (
           <>
-            {/* Filters */}
             <div style={{ 
               display: 'flex', 
               gap: '16px', 
@@ -183,7 +220,6 @@ export default function Home() {
                     borderRadius: 'var(--radius-md)',
                     color: 'var(--text-primary)',
                     fontSize: '14px',
-                    transition: 'border-color 0.2s',
                   }}
                 />
                 <span style={{
@@ -217,7 +253,6 @@ export default function Home() {
               </select>
             </div>
 
-            {/* Kanban Board */}
             <div style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
@@ -267,96 +302,6 @@ export default function Home() {
           </>
         )}
 
-        {activeTab === 'activity' && (
-          <div style={{
-            backgroundColor: 'var(--bg-secondary)',
-            borderRadius: 'var(--radius-lg)',
-            padding: '24px',
-            border: '1px solid var(--border)'
-          }}>
-            <h2 style={{ fontSize: '20px', fontWeight: 600, marginBottom: '20px', color: 'var(--text-primary)' }}>
-              Recent Activity
-            </h2>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              {[
-                { time: '08:00', text: 'Daily self-audit completed', type: 'success' },
-                { time: '07:00', text: 'Morning briefing delivered', type: 'info' },
-                { time: 'Yesterday', text: 'Dashboard migrated to Vercel + Supabase', type: 'success' },
-              ].map((activity, i) => (
-                <div key={i} style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '16px',
-                  padding: '16px',
-                  backgroundColor: 'var(--bg-tertiary)',
-                  borderRadius: 'var(--radius-md)',
-                  borderLeft: `3px solid var(--${activity.type === 'success' ? 'success' : 'accent'})`
-                }}>
-                  <span style={{ 
-                    color: 'var(--accent)', 
-                    fontSize: '13px',
-                    fontWeight: 500,
-                    minWidth: '60px'
-                  }}>{activity.time}</span>
-                  <span style={{ color: 'var(--text-primary)' }}>{activity.text}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {activeTab === 'memory' && (
-          <div style={{
-            backgroundColor: 'var(--bg-secondary)',
-            borderRadius: 'var(--radius-lg)',
-            padding: '24px',
-            border: '1px solid var(--border)'
-          }}>
-            <h2 style={{ fontSize: '20px', fontWeight: 600, marginBottom: '20px', color: 'var(--text-primary)' }}>
-              Key Memories
-            </h2>
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-              gap: '16px'
-            }}>
-              {[
-                { icon: '💼', title: 'Work', items: ['SWE at bank in Perth', 'Promotion incoming (Feb 2026)', '$80k → ~$130k base'] },
-                { icon: '🎯', title: 'Goals', items: ['Buy house late 2026', 'AWS certs (Cloud + Dev)', 'Launch recipe app'] },
-                { icon: '🏠', title: 'Home Buying', items: ['Waiting for promotion', 'Saving deposit', 'Perth market research'] },
-                { icon: '🤖', title: 'AI Stack', items: ['Clawdius (Kimi + Antigravity)', '5 Telegram groups', 'Daily briefings at 7am'] },
-              ].map((card, i) => (
-                <div key={i} style={{
-                  backgroundColor: 'var(--bg-tertiary)',
-                  padding: '20px',
-                  borderRadius: 'var(--radius-md)',
-                  border: '1px solid var(--border-subtle)'
-                }}>
-                  <h3 style={{ 
-                    color: 'var(--accent)', 
-                    fontWeight: 600, 
-                    marginBottom: '12px',
-                    fontSize: '16px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px'
-                  }}>
-                    {card.icon} {card.title}
-                  </h3>
-                  <ul style={{ color: 'var(--text-secondary)', lineHeight: 1.8, fontSize: '14px' }}>
-                    {card.items.map((item, j) => (
-                      <li key={j} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span style={{ color: 'var(--accent)', fontSize: '10px' }}>●</span>
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
         {activeTab === 'notes' && (
           <div style={{
             backgroundColor: 'var(--bg-secondary)',
@@ -364,13 +309,59 @@ export default function Home() {
             padding: '24px',
             border: '1px solid var(--border)'
           }}>
-            <h2 style={{ fontSize: '20px', fontWeight: 600, marginBottom: '20px', color: 'var(--text-primary)' }}>
-              Quick Notes
-            </h2>
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: '16px'
+            }}>
+              <h2 style={{ 
+                fontSize: '20px', 
+                fontWeight: 600, 
+                color: 'var(--text-primary)',
+                margin: 0
+              }}>
+                Quick Notes
+              </h2>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                {noteSaving && (
+                  <span style={{ color: 'var(--text-muted)', fontSize: '13px' }}>
+                    Saving...
+                  </span>
+                )}
+                {noteLastSaved && !noteSaving && (
+                  <span style={{ color: 'var(--text-muted)', fontSize: '13px' }}>
+                    Saved {noteLastSaved.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
+                  </span>
+                )}
+                <button
+                  onClick={saveNotes}
+                  disabled={noteSaving}
+                  style={{
+                    padding: '8px 16px',
+                    backgroundColor: 'var(--accent)',
+                    color: '#fff',
+                    border: 'none',
+                    borderRadius: 'var(--radius-md)',
+                    fontSize: '14px',
+                    fontWeight: 500,
+                    cursor: noteSaving ? 'not-allowed' : 'pointer',
+                    opacity: noteSaving ? 0.7 : 1
+                  }}
+                >
+                  Save
+                </button>
+              </div>
+            </div>
+
             <textarea
+              value={noteContent}
+              onChange={(e) => setNoteContent(e.target.value)}
+              onBlur={saveNotes}
+              placeholder="Type your notes here..."
               style={{
                 width: '100%',
-                minHeight: '200px',
+                minHeight: '400px',
                 backgroundColor: 'var(--bg-tertiary)',
                 border: '1px solid var(--border)',
                 borderRadius: 'var(--radius-md)',
@@ -381,8 +372,28 @@ export default function Home() {
                 lineHeight: 1.6,
                 fontFamily: 'inherit'
               }}
-              placeholder="Type your notes here..."
             />
+            <p style={{ 
+              color: 'var(--text-muted)', 
+              fontSize: '13px', 
+              marginTop: '12px',
+              fontStyle: 'italic'
+            }}>
+              Notes are saved automatically when you click away or hit the Save button
+            </p>
+          </div>
+        )}
+
+        {(activeTab === 'activity' || activeTab === 'memory') && (
+          <div style={{
+            backgroundColor: 'var(--bg-secondary)',
+            borderRadius: 'var(--radius-lg)',
+            padding: '24px',
+            border: '1px solid var(--border)',
+            textAlign: 'center',
+            color: 'var(--text-muted)'
+          }}>
+            <p>Coming soon...</p>
           </div>
         )}
       </main>
