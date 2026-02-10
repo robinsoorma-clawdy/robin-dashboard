@@ -57,37 +57,53 @@ export default function TaskDetailModal({ task, onClose }: TaskDetailModalProps)
     setActivitiesLoading(false)
   }, [task.id])
 
-  // Load data on mount + subscribe to real-time comments
-  useEffect(() => {
-    fetchComments()
+    // Load data on mount + subscribe to real-time comments & activities
+    useEffect(() => {
+      fetchComments()
 
-    const commentsChannel = supabase
-      .channel(`task_comments_${task.id}`)
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'task_comments',
-          filter: `task_id=eq.${task.id}`,
-        },
-        () => {
-          fetchComments()
-        }
-      )
-      .subscribe()
+      const commentsChannel = supabase
+        .channel(`task_comments_${task.id}`)
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'task_comments',
+            filter: `task_id=eq.${task.id}`,
+          },
+          () => {
+            fetchComments()
+          }
+        )
+        .subscribe()
 
-    return () => {
-      commentsChannel.unsubscribe()
-    }
-  }, [task.id, fetchComments])
+      const activitiesChannel = supabase
+        .channel(`task_activities_${task.id}`)
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'activity_logs',
+            filter: `task_id=eq.${task.id}`,
+          },
+          () => {
+            if (activeTab === 'history') {
+              fetchTaskActivities()
+            } else {
+              // Even if not on history tab, we might want to refresh activity count
+              // for the tab badge.
+              fetchTaskActivities()
+            }
+          }
+        )
+        .subscribe()
 
-  // Load activities when tab switches to history
-  useEffect(() => {
-    if (activeTab === 'history') {
-      fetchTaskActivities()
-    }
-  }, [activeTab, fetchTaskActivities])
+      return () => {
+        commentsChannel.unsubscribe()
+        activitiesChannel.unsubscribe()
+      }
+    }, [task.id, fetchComments, fetchTaskActivities, activeTab])
 
   // Escape key to close
   useEffect(() => {

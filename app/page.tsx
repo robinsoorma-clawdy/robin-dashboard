@@ -5,6 +5,7 @@ import { supabase } from '@/lib/supabase'
 import { Task, Activity } from '@/lib/types'
 import TaskColumn from '@/components/TaskColumn'
 import Header from '@/components/Header'
+import TaskDetailModal from '@/components/TaskDetailModal'
 import { logActivity, fetchActivityLogs } from '@/lib/activity'
 
 export default function Home() {
@@ -15,6 +16,7 @@ export default function Home() {
   const [dragOverColumn, setDragOverColumn] = useState<string | null>(null)
   const [filter, setFilter] = useState('all')
   const [searchQuery, setSearchQuery] = useState('')
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null)
   
   // Notes state
   const [noteContent, setNoteContent] = useState('')
@@ -303,6 +305,7 @@ export default function Home() {
                 tasks={todoTasks}
                 count={todoTasks.length}
                 onTaskAdded={fetchTasks}
+                onTaskClick={setSelectedTask}
                 onDragStart={handleDragStart}
                 onDragEnd={handleDragEnd}
                 onDragOver={handleDragOver}
@@ -316,6 +319,7 @@ export default function Home() {
                 tasks={progressTasks}
                 count={progressTasks.length}
                 onTaskAdded={fetchTasks}
+                onTaskClick={setSelectedTask}
                 onDragStart={handleDragStart}
                 onDragEnd={handleDragEnd}
                 onDragOver={handleDragOver}
@@ -329,6 +333,7 @@ export default function Home() {
                 tasks={doneTasks}
                 count={doneTasks.length}
                 onTaskAdded={fetchTasks}
+                onTaskClick={setSelectedTask}
                 onDragStart={handleDragStart}
                 onDragEnd={handleDragEnd}
                 onDragOver={handleDragOver}
@@ -727,6 +732,13 @@ export default function Home() {
           </div>
         )}
       </main>
+
+      {selectedTask && (
+        <TaskDetailModal
+          task={tasks.find(t => t.id === selectedTask.id) || selectedTask}
+          onClose={() => setSelectedTask(null)}
+        />
+      )}
     </div>
   )
 }
