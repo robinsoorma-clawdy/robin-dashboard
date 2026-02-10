@@ -1,0 +1,15 @@
+{
+  "meta": {
+    "note": "Add this to your ~/.openclaw/openclaw.json"
+  },
+  "env": {
+    "vars": {
+      "EXA_API_KEY": "your_api_key_here"
+    }
+  },
+  "mcpServers": {
+    "exa": {
+      "url": "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,get_code_context_exa,crawling_exa,company_research_exa,people_search_exa,deep_researcher_start,deep_researcher_check"
+    }
+  }
+}
