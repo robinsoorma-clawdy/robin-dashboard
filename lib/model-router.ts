@@ -45,11 +45,13 @@ export const MODEL_COSTS = {
   'google/antigravity-gemini-3-flash': 0.15,      // Cheapest
   'google/antigravity-claude-sonnet-4-5': 0.80,   // Balanced
   'google/antigravity-claude-opus-4-6-thinking': 3.00  // Expensive
-}
+} as const
+
+type ModelName = keyof typeof MODEL_COSTS
 
 export function estimateSavings(task: string): string {
-  const selected = selectModel(task)
-  const expensive = 'google/antigravity-claude-opus-4-6-thinking'
+  const selected = selectModel(task) as ModelName
+  const expensive: ModelName = 'google/antigravity-claude-opus-4-6-thinking'
   
   if (selected !== expensive) {
     const savings = ((MODEL_COSTS[expensive] - MODEL_COSTS[selected]) / MODEL_COSTS[expensive] * 100).toFixed(0)

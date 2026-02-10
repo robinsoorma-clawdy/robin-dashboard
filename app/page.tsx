@@ -6,6 +6,7 @@ import { Task, Activity } from '@/lib/types'
 import TaskColumn from '@/components/TaskColumn'
 import Header from '@/components/Header'
 import TaskDetailModal from '@/components/TaskDetailModal'
+import GoalsTab from '@/components/GoalsTab'
 import { logActivity, fetchActivityLogs } from '@/lib/activity'
 
 export default function Home() {
@@ -224,6 +225,7 @@ export default function Home() {
         }}>
           {[
             { id: 'tasks', label: '📋 Tasks' },
+            { id: 'goals', label: '🏠 Goals' },
             { id: 'activity', label: '📊 Activity' },
             { id: 'memory', label: '🧠 Memory' },
             { id: 'notes', label: '📝 Notes' },
@@ -347,6 +349,10 @@ export default function Home() {
               />
             </div>
           </>
+        )}
+
+        {activeTab === 'goals' && (
+          <GoalsTab tasks={tasks} />
         )}
 
         {activeTab === 'notes' && (
