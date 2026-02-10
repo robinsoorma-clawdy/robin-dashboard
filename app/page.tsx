@@ -7,6 +7,7 @@ import TaskColumn from '@/components/TaskColumn'
 import Header from '@/components/Header'
 import TaskDetailModal from '@/components/TaskDetailModal'
 import GoalsTab from '@/components/GoalsTab'
+import NetWorthTab from '@/components/NetWorthTab'
 import { logActivity, fetchActivityLogs } from '@/lib/activity'
 
 export default function Home() {
@@ -223,13 +224,14 @@ export default function Home() {
           borderRadius: 'var(--radius-lg)',
           width: 'fit-content'
         }}>
-          {[
-            { id: 'tasks', label: '📋 Tasks' },
-            { id: 'goals', label: '🏠 Goals' },
-            { id: 'activity', label: '📊 Activity' },
-            { id: 'memory', label: '🧠 Memory' },
-            { id: 'notes', label: '📝 Notes' },
-          ].map((tab) => (
+            {[
+              { id: 'tasks', label: '📋 Tasks' },
+              { id: 'goals', label: '🏠 Goals' },
+              { id: 'networth', label: '📈 Net Worth' },
+              { id: 'activity', label: '📊 Activity' },
+              { id: 'memory', label: '🧠 Memory' },
+              { id: 'notes', label: '📝 Notes' },
+            ].map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
@@ -353,6 +355,10 @@ export default function Home() {
 
         {activeTab === 'goals' && (
           <GoalsTab tasks={tasks} />
+        )}
+
+        {activeTab === 'networth' && (
+          <NetWorthTab />
         )}
 
         {activeTab === 'notes' && (
