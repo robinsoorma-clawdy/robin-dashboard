@@ -226,6 +226,15 @@ export default function NetWorthTab() {
 
   const currentTotal = breakdown.reduce((sum, item) => sum + item.amount, 0)
 
+  // Calculate percentage change from the previous month's data point
+  const percentageChange = useMemo(() => {
+    if (chartData.length < 2) return null
+    const current = chartData[chartData.length - 1].total
+    const previous = chartData[chartData.length - 2].total
+    if (previous === 0) return null
+    return ((current - previous) / previous) * 100
+  }, [chartData])
+
   if (loading) {
     return <div style={{ color: 'var(--text-muted)', textAlign: 'center', padding: '40px' }}>Loading Net Worth data...</div>
   }
@@ -256,17 +265,27 @@ export default function NetWorthTab() {
           <div style={{ fontSize: '48px', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '4px' }}>
             ${currentTotal.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
           </div>
-          <div style={{ 
-            fontSize: '14px', 
-            color: 'var(--success)', 
-            fontWeight: 600,
-            display: 'flex',
-            alignItems: 'center',
-            gap: '4px'
-          }}>
-            <span>▲</span>
-            <span>Steady Growth</span>
-          </div>
+          {percentageChange !== null ? (
+            <div style={{ 
+              fontSize: '14px', 
+              color: percentageChange >= 0 ? 'var(--success)' : 'var(--danger)', 
+              fontWeight: 600,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px'
+            }}>
+              <span>{percentageChange >= 0 ? '▲' : '▼'}</span>
+              <span>{percentageChange >= 0 ? '+' : ''}{percentageChange.toFixed(1)}% vs previous month</span>
+            </div>
+          ) : (
+            <div style={{ 
+              fontSize: '14px', 
+              color: 'var(--text-muted)', 
+              fontWeight: 600,
+            }}>
+              No previous data to compare
+            </div>
+          )}
         </div>
 
         {/* Chart */}
