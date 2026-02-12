@@ -14,13 +14,13 @@ import {
 } from 'recharts'
 
 const CATEGORIES: { value: NetWorthCategory; label: string; color: string }[] = [
-  { value: 'salary', label: 'Salary', color: '#388bfd' },
-  { value: 'super', label: 'Super', color: '#a371f7' },
-  { value: 'investments', label: 'Investments', color: '#d29922' },
-  { value: 'cash', label: 'Cash', color: '#3fb950' },
-  { value: 'crypto', label: 'Crypto', color: '#f7931a' },
-  { value: 'property', label: 'Property', color: '#f85149' },
-  { value: 'other', label: 'Other', color: '#484f58' },
+  { value: 'salary', label: 'Salary', color: '#c9a84c' },
+  { value: 'super', label: 'Super', color: '#8b7355' },
+  { value: 'investments', label: 'Investments', color: '#e2a336' },
+  { value: 'cash', label: 'Cash', color: '#34d399' },
+  { value: 'crypto', label: 'Crypto', color: '#d4a574' },
+  { value: 'property', label: 'Property', color: '#e8485f' },
+  { value: 'other', label: 'Other', color: '#5c584f' },
 ]
 
 export default function NetWorthTab() {
@@ -228,109 +228,106 @@ export default function NetWorthTab() {
     padding: '10px 14px',
     color: 'var(--text-primary)',
     fontSize: '13px',
-    transition: 'border-color 0.2s, box-shadow 0.2s',
+    fontFamily: 'var(--font-body)',
+    transition: 'border-color 0.3s ease, box-shadow 0.3s ease',
     width: '100%',
   }
 
   if (loading) {
     return (
-      <div style={{ color: 'var(--text-muted)', textAlign: 'center', padding: '48px' }}>
+      <div style={{ color: 'var(--text-muted)', textAlign: 'center', padding: '64px' }}>
         <div style={{
-          width: '28px',
-          height: '28px',
-          border: '2px solid var(--bg-tertiary)',
+          width: '24px',
+          height: '24px',
+          border: '1.5px solid var(--bg-tertiary)',
           borderTopColor: 'var(--accent)',
           borderRadius: '50%',
           animation: 'spin 1s linear infinite',
-          margin: '0 auto 12px',
+          margin: '0 auto 16px',
         }} />
-        <span style={{ fontSize: '13px' }}>Loading Net Worth data...</span>
+        <span style={{ fontSize: '11px', letterSpacing: '0.12em', textTransform: 'uppercase' }}>Loading</span>
       </div>
     )
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
       {/* Top Section */}
       <div style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
-        gap: '20px'
+        gap: '24px'
       }}>
-        {/* Big Number */}
+        {/* Big Number — Editorial style */}
         <div className="animate-fade-in-up" style={{
           backgroundColor: 'var(--bg-secondary)',
           borderRadius: 'var(--radius-lg)',
-          padding: '32px',
+          padding: '40px',
           border: '1px solid var(--border)',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',
-          alignItems: 'center',
-          textAlign: 'center',
+          alignItems: 'flex-start',
           boxShadow: 'var(--shadow-sm)',
           position: 'relative',
           overflow: 'hidden',
         }}>
-          {/* Background glow */}
+          {/* Geometric corner */}
           <div style={{
             position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            width: '300px',
-            height: '300px',
-            background: 'radial-gradient(ellipse, rgba(56, 139, 253, 0.06) 0%, transparent 70%)',
+            top: '24px',
+            right: '24px',
             pointerEvents: 'none',
-          }} />
+          }}>
+            <div style={{ position: 'absolute', top: 0, right: 0, width: '32px', height: '1px', background: 'var(--accent)', opacity: 0.25 }} />
+            <div style={{ position: 'absolute', top: 0, right: 0, width: '1px', height: '32px', background: 'var(--accent)', opacity: 0.25 }} />
+          </div>
 
-          <h3 style={{ 
-            fontSize: '11px', 
+          <p style={{ 
+            fontSize: '10px', 
             color: 'var(--text-muted)', 
-            marginBottom: '8px', 
+            marginBottom: '12px', 
             textTransform: 'uppercase', 
-            letterSpacing: '0.1em',
-            fontWeight: 700,
-            position: 'relative',
+            letterSpacing: '0.16em',
+            fontWeight: 500,
           }}>
             Current Net Worth
-          </h3>
-          <div style={{ 
-            fontSize: '44px', 
-            fontWeight: 800, 
-            background: 'var(--gradient-brand)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text',
-            marginBottom: '8px',
-            letterSpacing: '-0.03em',
-            lineHeight: 1.1,
-            position: 'relative',
+          </p>
+          <div className="animate-fade-in-up" style={{ 
+            fontFamily: 'var(--font-display)',
+            fontSize: '48px', 
+            fontWeight: 400, 
+            fontStyle: 'italic',
+            color: 'var(--accent)',
+            marginBottom: '12px',
+            letterSpacing: '-0.02em',
+            lineHeight: 1,
           }}>
             ${currentTotal.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
           </div>
+
+          {/* Gold divider */}
+          <div style={{ width: '40px', height: '1px', background: 'var(--accent)', marginBottom: '12px', opacity: 0.4 }} />
+
           {percentageChange !== null ? (
             <div style={{ 
-              fontSize: '13px', 
+              fontSize: '12px', 
               color: percentageChange >= 0 ? 'var(--success)' : 'var(--danger)', 
-              fontWeight: 600,
+              fontWeight: 500,
               display: 'flex',
               alignItems: 'center',
-              gap: '4px',
-              padding: '4px 12px',
-              borderRadius: '20px',
-              backgroundColor: percentageChange >= 0 ? 'var(--success-subtle)' : 'var(--danger-subtle)',
-              position: 'relative',
+              gap: '6px',
+              letterSpacing: '0.02em',
             }}>
-              <span>{percentageChange >= 0 ? '▲' : '▼'}</span>
+              <span>{percentageChange >= 0 ? '\u25B2' : '\u25BC'}</span>
               <span>{percentageChange >= 0 ? '+' : ''}{percentageChange.toFixed(1)}% vs previous</span>
             </div>
           ) : (
             <div style={{ 
-              fontSize: '12px', 
+              fontSize: '11px', 
               color: 'var(--text-muted)', 
-              fontWeight: 500,
-              position: 'relative',
+              fontWeight: 400,
+              fontStyle: 'italic',
             }}>
               No previous data to compare
             </div>
@@ -341,7 +338,7 @@ export default function NetWorthTab() {
         <div className="animate-fade-in-up" style={{
           backgroundColor: 'var(--bg-secondary)',
           borderRadius: 'var(--radius-lg)',
-          padding: '24px',
+          padding: '28px',
           border: '1px solid var(--border)',
           height: '300px',
           boxShadow: 'var(--shadow-sm)',
@@ -349,11 +346,11 @@ export default function NetWorthTab() {
           animationFillMode: 'backwards',
         }}>
           <h3 style={{ 
-            fontSize: '13px', 
-            fontWeight: 700, 
-            marginBottom: '16px', 
-            color: 'var(--text-secondary)',
-            letterSpacing: '0.04em',
+            fontSize: '10px', 
+            fontWeight: 500, 
+            marginBottom: '20px', 
+            color: 'var(--text-muted)',
+            letterSpacing: '0.14em',
             textTransform: 'uppercase',
           }}>
             Growth Over Time
@@ -362,23 +359,25 @@ export default function NetWorthTab() {
             <AreaChart data={chartData}>
               <defs>
                 <linearGradient id="colorTotal" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#388bfd" stopOpacity={0.25}/>
-                  <stop offset="95%" stopColor="#388bfd" stopOpacity={0}/>
+                  <stop offset="5%" stopColor="#c9a84c" stopOpacity={0.20}/>
+                  <stop offset="95%" stopColor="#c9a84c" stopOpacity={0}/>
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(48, 54, 61, 0.4)" vertical={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(201, 168, 76, 0.06)" vertical={false} />
               <XAxis 
                 dataKey="date" 
-                stroke="#484f58" 
-                fontSize={11}
+                stroke="#5c584f" 
+                fontSize={10}
+                fontFamily="var(--font-body)"
                 tickFormatter={(str) => {
                   const d = new Date(str)
                   return d.toLocaleDateString('en-US', { month: 'short', year: '2-digit' })
                 }}
               />
               <YAxis 
-                stroke="#484f58" 
-                fontSize={11}
+                stroke="#5c584f" 
+                fontSize={10}
+                fontFamily="var(--font-body)"
                 tickFormatter={(value) => `$${value / 1000}k`}
               />
               <Tooltip 
@@ -388,9 +387,10 @@ export default function NetWorthTab() {
                   borderRadius: 'var(--radius-md)',
                   color: 'var(--text-primary)',
                   boxShadow: 'var(--shadow-lg)',
-                  fontSize: '13px',
+                  fontSize: '12px',
+                  fontFamily: 'var(--font-body)',
                 }}
-                itemStyle={{ color: '#388bfd' }}
+                itemStyle={{ color: '#c9a84c' }}
                 formatter={(value: number | undefined) => {
                   if (value === undefined) return ['', 'Total Net Worth']
                   return [`$${value.toLocaleString()}`, 'Total Net Worth']
@@ -399,10 +399,10 @@ export default function NetWorthTab() {
               <Area 
                 type="monotone" 
                 dataKey="total" 
-                stroke="#388bfd" 
+                stroke="#c9a84c" 
                 fillOpacity={1} 
                 fill="url(#colorTotal)" 
-                strokeWidth={2.5}
+                strokeWidth={1.5}
               />
             </AreaChart>
           </ResponsiveContainer>
@@ -412,58 +412,64 @@ export default function NetWorthTab() {
       <div style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-        gap: '20px'
+        gap: '24px'
       }}>
         {/* Category Breakdown */}
         <div className="animate-fade-in-up" style={{
           backgroundColor: 'var(--bg-secondary)',
           borderRadius: 'var(--radius-lg)',
-          padding: '24px',
+          padding: '28px',
           border: '1px solid var(--border)',
           boxShadow: 'var(--shadow-sm)',
           animationDelay: '0.12s',
           animationFillMode: 'backwards',
         }}>
           <h3 style={{ 
-            fontSize: '13px', 
-            fontWeight: 700, 
-            marginBottom: '20px', 
-            color: 'var(--text-secondary)',
-            letterSpacing: '0.04em',
-            textTransform: 'uppercase',
+            fontFamily: 'var(--font-display)',
+            fontSize: '20px', 
+            fontWeight: 400, 
+            fontStyle: 'italic',
+            marginBottom: '8px', 
+            color: 'var(--text-primary)',
+            letterSpacing: '-0.01em',
           }}>
             Category Breakdown
           </h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            {breakdown.map(item => (
-              <div key={item.value}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px', fontSize: '13px' }}>
-                  <span style={{ color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 500 }}>
+          {/* Gold divider */}
+          <div style={{ width: '32px', height: '1px', background: 'var(--accent)', marginBottom: '24px', opacity: 0.4 }} />
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+            {breakdown.map((item, i) => (
+              <div key={item.value} className="animate-fade-in-up" style={{
+                animationDelay: `${0.12 + i * 0.06}s`,
+                animationFillMode: 'backwards',
+              }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '12px' }}>
+                  <span style={{ color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '10px', fontWeight: 400 }}>
                     <div style={{ 
-                      width: '8px', 
-                      height: '8px', 
+                      width: '6px', 
+                      height: '6px', 
                       borderRadius: '50%', 
                       backgroundColor: item.color,
-                      boxShadow: `0 0 6px ${item.color}40`,
                     }} />
                     {item.label}
                   </span>
-                  <span style={{ color: 'var(--text-primary)', fontWeight: 700, fontSize: '12px' }}>
-                    ${item.amount.toLocaleString()} <span style={{ color: 'var(--text-muted)', fontWeight: 500 }}>({item.percentage.toFixed(1)}%)</span>
+                  <span style={{ color: 'var(--text-primary)', fontWeight: 600, fontSize: '12px', fontFamily: 'var(--font-body)' }}>
+                    ${item.amount.toLocaleString()} <span style={{ color: 'var(--text-muted)', fontWeight: 400 }}>({item.percentage.toFixed(1)}%)</span>
                   </span>
                 </div>
                 <div style={{ 
-                  height: '6px', 
+                  height: '3px', 
                   backgroundColor: 'var(--bg-tertiary)', 
-                  borderRadius: '3px',
+                  borderRadius: '2px',
                   overflow: 'hidden'
                 }}>
                   <div className="progress-bar-fill" style={{ 
                     width: `${item.percentage}%`, 
                     height: '100%', 
                     backgroundColor: item.color,
-                    borderRadius: '3px',
-                    transition: 'width 0.8s cubic-bezier(0.4, 0, 0.2, 1)',
+                    borderRadius: '2px',
+                    transition: 'width 1s cubic-bezier(0.22, 1, 0.36, 1)',
                   }} />
                 </div>
               </div>
@@ -475,38 +481,45 @@ export default function NetWorthTab() {
         <div className="animate-fade-in-up" style={{
           backgroundColor: 'var(--bg-secondary)',
           borderRadius: 'var(--radius-lg)',
-          padding: '24px',
+          padding: '28px',
           border: '1px solid var(--border)',
           boxShadow: 'var(--shadow-sm)',
           animationDelay: '0.16s',
           animationFillMode: 'backwards',
         }}>
           <h3 style={{ 
-            fontSize: '13px', 
-            fontWeight: 700, 
-            marginBottom: '20px', 
-            color: 'var(--text-secondary)',
-            letterSpacing: '0.04em',
-            textTransform: 'uppercase',
+            fontFamily: 'var(--font-display)',
+            fontSize: '20px', 
+            fontWeight: 400, 
+            fontStyle: 'italic',
+            marginBottom: '8px', 
+            color: 'var(--text-primary)',
+            letterSpacing: '-0.01em',
           }}>
-            {editingId ? 'Edit Entry' : 'Add New Entry'}
+            {editingId ? 'Edit Entry' : 'New Entry'}
           </h3>
+          {/* Gold divider */}
+          <div style={{ width: '32px', height: '1px', background: 'var(--accent)', marginBottom: '24px', opacity: 0.4 }} />
+
           {entries.length === 0 && (
             <button 
               onClick={seedData}
               disabled={isSubmitting}
               style={{
                 width: '100%',
-                backgroundColor: 'var(--bg-tertiary)',
+                backgroundColor: 'transparent',
                 color: 'var(--accent)',
-                border: '1px dashed var(--accent)',
+                border: '1px dashed var(--border-accent)',
                 borderRadius: 'var(--radius-md)',
                 padding: '12px',
                 marginBottom: '16px',
-                fontWeight: 600,
+                fontWeight: 500,
                 cursor: 'pointer',
-                fontSize: '13px',
-                transition: 'all 0.2s',
+                fontSize: '12px',
+                transition: 'all 0.3s ease',
+                letterSpacing: '0.06em',
+                textTransform: 'uppercase',
+                fontFamily: 'var(--font-body)',
               }}
             >
               Initialize with Seed Data
@@ -515,7 +528,7 @@ export default function NetWorthTab() {
           <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                <label style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 600, letterSpacing: '0.04em', textTransform: 'uppercase' }}>Date</label>
+                <label style={{ fontSize: '10px', color: 'var(--text-muted)', fontWeight: 500, letterSpacing: '0.12em', textTransform: 'uppercase' }}>Date</label>
                 <input 
                   type="date" 
                   value={formData.date}
@@ -525,7 +538,7 @@ export default function NetWorthTab() {
                 />
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                <label style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 600, letterSpacing: '0.04em', textTransform: 'uppercase' }}>Category</label>
+                <label style={{ fontSize: '10px', color: 'var(--text-muted)', fontWeight: 500, letterSpacing: '0.12em', textTransform: 'uppercase' }}>Category</label>
                 <select 
                   value={formData.category}
                   onChange={e => setFormData({ ...formData, category: e.target.value as NetWorthCategory })}
@@ -539,7 +552,7 @@ export default function NetWorthTab() {
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              <label style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 600, letterSpacing: '0.04em', textTransform: 'uppercase' }}>Amount ($)</label>
+              <label style={{ fontSize: '10px', color: 'var(--text-muted)', fontWeight: 500, letterSpacing: '0.12em', textTransform: 'uppercase' }}>Amount ($)</label>
               <input 
                 type="number" 
                 placeholder="0.00"
@@ -551,7 +564,7 @@ export default function NetWorthTab() {
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              <label style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 600, letterSpacing: '0.04em', textTransform: 'uppercase' }}>Notes</label>
+              <label style={{ fontSize: '10px', color: 'var(--text-muted)', fontWeight: 500, letterSpacing: '0.12em', textTransform: 'uppercase' }}>Notes</label>
               <input 
                 type="text" 
                 placeholder="Optional notes"
@@ -565,18 +578,20 @@ export default function NetWorthTab() {
               type="submit"
               disabled={isSubmitting}
               style={{
-                background: 'var(--gradient-brand)',
-                color: '#fff',
+                background: 'var(--accent)',
+                color: 'var(--bg-primary)',
                 border: 'none',
                 borderRadius: 'var(--radius-md)',
-                padding: '11px',
+                padding: '12px',
                 fontWeight: 600,
                 cursor: isSubmitting ? 'not-allowed' : 'pointer',
                 opacity: isSubmitting ? 0.7 : 1,
                 marginTop: '4px',
-                fontSize: '13px',
-                boxShadow: '0 2px 8px rgba(56, 139, 253, 0.25)',
-                transition: 'opacity 0.2s, transform 0.15s',
+                fontSize: '12px',
+                letterSpacing: '0.06em',
+                textTransform: 'uppercase',
+                transition: 'opacity 0.2s, transform 0.2s cubic-bezier(0.22, 1, 0.36, 1)',
+                fontFamily: 'var(--font-body)',
               }}
             >
               {isSubmitting ? 'Saving...' : (editingId ? 'Update Entry' : 'Add Entry')}
@@ -593,11 +608,13 @@ export default function NetWorthTab() {
                   color: 'var(--text-secondary)',
                   border: '1px solid var(--border)',
                   borderRadius: 'var(--radius-md)',
-                  padding: '9px',
-                  fontSize: '13px',
+                  padding: '10px',
+                  fontSize: '12px',
                   cursor: 'pointer',
-                  fontWeight: 500,
-                  transition: 'all 0.2s',
+                  fontWeight: 400,
+                  transition: 'all 0.2s ease',
+                  letterSpacing: '0.04em',
+                  fontFamily: 'var(--font-body)',
                 }}
               >
                 Cancel Edit
@@ -611,31 +628,35 @@ export default function NetWorthTab() {
       <div className="animate-fade-in-up" style={{
         backgroundColor: 'var(--bg-secondary)',
         borderRadius: 'var(--radius-lg)',
-        padding: '24px',
+        padding: '28px',
         border: '1px solid var(--border)',
         boxShadow: 'var(--shadow-sm)',
         animationDelay: '0.2s',
         animationFillMode: 'backwards',
       }}>
         <h3 style={{ 
-          fontSize: '13px', 
-          fontWeight: 700, 
-          marginBottom: '20px', 
-          color: 'var(--text-secondary)',
-          letterSpacing: '0.04em',
-          textTransform: 'uppercase',
+          fontFamily: 'var(--font-display)',
+          fontSize: '20px', 
+          fontWeight: 400, 
+          fontStyle: 'italic',
+          marginBottom: '8px', 
+          color: 'var(--text-primary)',
+          letterSpacing: '-0.01em',
         }}>
           Recent Entries
         </h3>
+        {/* Gold divider */}
+        <div style={{ width: '32px', height: '1px', background: 'var(--accent)', marginBottom: '24px', opacity: 0.4 }} />
+
         <div style={{ overflowX: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
               <tr style={{ borderBottom: '1px solid var(--border)' }}>
-                <th style={{ textAlign: 'left', padding: '10px 12px', color: 'var(--text-muted)', fontSize: '11px', fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase' }}>Date</th>
-                <th style={{ textAlign: 'left', padding: '10px 12px', color: 'var(--text-muted)', fontSize: '11px', fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase' }}>Category</th>
-                <th style={{ textAlign: 'left', padding: '10px 12px', color: 'var(--text-muted)', fontSize: '11px', fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase' }}>Amount</th>
-                <th style={{ textAlign: 'left', padding: '10px 12px', color: 'var(--text-muted)', fontSize: '11px', fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase' }}>Notes</th>
-                <th style={{ textAlign: 'right', padding: '10px 12px', color: 'var(--text-muted)', fontSize: '11px', fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase' }}>Actions</th>
+                <th style={{ textAlign: 'left', padding: '10px 12px', color: 'var(--text-muted)', fontSize: '10px', fontWeight: 500, letterSpacing: '0.12em', textTransform: 'uppercase' }}>Date</th>
+                <th style={{ textAlign: 'left', padding: '10px 12px', color: 'var(--text-muted)', fontSize: '10px', fontWeight: 500, letterSpacing: '0.12em', textTransform: 'uppercase' }}>Category</th>
+                <th style={{ textAlign: 'left', padding: '10px 12px', color: 'var(--text-muted)', fontSize: '10px', fontWeight: 500, letterSpacing: '0.12em', textTransform: 'uppercase' }}>Amount</th>
+                <th style={{ textAlign: 'left', padding: '10px 12px', color: 'var(--text-muted)', fontSize: '10px', fontWeight: 500, letterSpacing: '0.12em', textTransform: 'uppercase' }}>Notes</th>
+                <th style={{ textAlign: 'right', padding: '10px 12px', color: 'var(--text-muted)', fontSize: '10px', fontWeight: 500, letterSpacing: '0.12em', textTransform: 'uppercase' }}>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -644,30 +665,37 @@ export default function NetWorthTab() {
                 return (
                   <tr key={entry.id} style={{ 
                     borderBottom: '1px solid var(--border-subtle)',
-                    transition: 'background-color 0.15s',
-                  }}>
+                    transition: 'background-color 0.2s ease',
+                  }}
+                  onMouseEnter={(e) => {
+                    (e.currentTarget as HTMLElement).style.backgroundColor = 'var(--bg-tertiary)'
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent'
+                  }}
+                  >
                     <td style={{ padding: '12px', fontSize: '13px', color: 'var(--text-secondary)' }}>
                       {new Date(entry.date).toLocaleDateString()}
                     </td>
                     <td style={{ padding: '12px', fontSize: '13px' }}>
                       <span style={{ 
                         padding: '3px 10px', 
-                        borderRadius: '10px', 
-                        backgroundColor: `${catInfo?.color}15`,
+                        borderRadius: '20px', 
+                        border: `1px solid ${catInfo?.color}30`,
                         color: catInfo?.color,
-                        fontSize: '11px',
-                        fontWeight: 700,
-                        textTransform: 'capitalize',
-                        letterSpacing: '0.02em',
+                        fontSize: '10px',
+                        fontWeight: 500,
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.06em',
                       }}>
                         {entry.category}
                       </span>
                     </td>
-                    <td style={{ padding: '12px', fontSize: '13px', fontWeight: 700, color: 'var(--text-primary)' }}>
+                    <td style={{ padding: '12px', fontSize: '13px', fontWeight: 600, color: 'var(--text-primary)' }}>
                       ${Number(entry.amount).toLocaleString()}
                     </td>
-                    <td style={{ padding: '12px', fontSize: '13px', color: 'var(--text-muted)' }}>
-                      {entry.notes || '-'}
+                    <td style={{ padding: '12px', fontSize: '13px', color: 'var(--text-muted)', fontStyle: entry.notes ? 'normal' : 'italic' }}>
+                      {entry.notes || '\u2014'}
                     </td>
                     <td style={{ padding: '12px', textAlign: 'right' }}>
                       <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '6px' }}>
@@ -678,11 +706,14 @@ export default function NetWorthTab() {
                             border: 'none',
                             color: 'var(--accent)',
                             cursor: 'pointer',
-                            fontSize: '12px',
-                            fontWeight: 600,
+                            fontSize: '11px',
+                            fontWeight: 500,
                             padding: '4px 8px',
                             borderRadius: 'var(--radius-sm)',
-                            transition: 'all 0.15s',
+                            transition: 'all 0.2s ease',
+                            letterSpacing: '0.04em',
+                            textTransform: 'uppercase',
+                            fontFamily: 'var(--font-body)',
                           }}
                           onMouseEnter={(e) => {
                             e.currentTarget.style.backgroundColor = 'var(--accent-subtle)'
@@ -700,11 +731,14 @@ export default function NetWorthTab() {
                             border: 'none',
                             color: 'var(--danger)',
                             cursor: 'pointer',
-                            fontSize: '12px',
-                            fontWeight: 600,
+                            fontSize: '11px',
+                            fontWeight: 500,
                             padding: '4px 8px',
                             borderRadius: 'var(--radius-sm)',
-                            transition: 'all 0.15s',
+                            transition: 'all 0.2s ease',
+                            letterSpacing: '0.04em',
+                            textTransform: 'uppercase',
+                            fontFamily: 'var(--font-body)',
                           }}
                           onMouseEnter={(e) => {
                             e.currentTarget.style.backgroundColor = 'var(--danger-subtle)'
@@ -723,7 +757,7 @@ export default function NetWorthTab() {
             </tbody>
           </table>
           {entries.length === 0 && (
-            <div style={{ textAlign: 'center', padding: '36px', color: 'var(--text-muted)', fontSize: '13px' }}>
+            <div style={{ textAlign: 'center', padding: '48px', color: 'var(--text-muted)', fontSize: '13px', fontStyle: 'italic' }}>
               No entries found. Start by adding your first entry above.
             </div>
           )}

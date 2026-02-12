@@ -183,46 +183,47 @@ export default function Home() {
       }}>
         <div style={{ textAlign: 'center' }}>
           <div style={{
-            width: '36px',
-            height: '36px',
-            border: '3px solid var(--bg-tertiary)',
+            width: '28px',
+            height: '28px',
+            border: '1.5px solid var(--bg-tertiary)',
             borderTopColor: 'var(--accent)',
             borderRadius: '50%',
             animation: 'spin 1s linear infinite',
-            margin: '0 auto 16px'
+            margin: '0 auto 20px'
           }} />
-          <p style={{ color: 'var(--text-muted)', fontSize: '13px', letterSpacing: '0.02em' }}>Loading...</p>
+          <p style={{ 
+            color: 'var(--text-muted)', 
+            fontSize: '10px', 
+            letterSpacing: '0.16em',
+            textTransform: 'uppercase',
+            fontFamily: 'var(--font-body)',
+          }}>Loading</p>
         </div>
       </div>
     )
   }
 
   const tabs = [
-    { id: 'tasks', label: 'Tasks', icon: '📋' },
-    { id: 'goals', label: 'Goals', icon: '🏠' },
-    { id: 'networth', label: 'Net Worth', icon: '📈' },
-    { id: 'activity', label: 'Activity', icon: '📊' },
-    { id: 'memory', label: 'Memory', icon: '🧠' },
-    { id: 'notes', label: 'Notes', icon: '📝' },
+    { id: 'tasks', label: 'Tasks' },
+    { id: 'goals', label: 'Goals' },
+    { id: 'networth', label: 'Net Worth' },
+    { id: 'activity', label: 'Activity' },
+    { id: 'memory', label: 'Memory' },
+    { id: 'notes', label: 'Notes' },
   ]
 
   return (
     <div style={{ minHeight: '100vh', backgroundColor: 'var(--bg-primary)' }}>
       <Header />
       
-      <main style={{ maxWidth: '1400px', margin: '0 auto', padding: '28px 20px' }}>
-        {/* Premium Tab Navigation */}
+      <main style={{ maxWidth: '1400px', margin: '0 auto', padding: '32px 24px' }}>
+        {/* Editorial Tab Navigation — no pills, just text + gold underline */}
         <nav style={{ 
           display: 'flex', 
-          gap: '4px', 
-          marginBottom: '32px',
+          gap: '0', 
+          marginBottom: '40px',
           flexWrap: 'wrap',
-          padding: '4px',
-          backgroundColor: 'var(--bg-secondary)',
-          borderRadius: 'var(--radius-lg)',
-          width: 'fit-content',
-          border: '1px solid var(--border)',
-          boxShadow: 'var(--shadow-sm)',
+          borderBottom: '1px solid var(--border)',
         }}>
           {tabs.map((tab) => {
             const isActive = activeTab === tab.id
@@ -231,23 +232,32 @@ export default function Home() {
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 style={{
-                  padding: '10px 18px',
-                  borderRadius: 'var(--radius-md)',
+                  padding: '12px 20px',
                   border: 'none',
+                  borderBottom: `1px solid ${isActive ? 'var(--accent)' : 'transparent'}`,
                   cursor: 'pointer',
-                  fontSize: '13px',
-                  fontWeight: isActive ? 600 : 500,
-                  transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
-                  backgroundColor: isActive ? 'var(--accent)' : 'transparent',
-                  color: isActive ? '#fff' : 'var(--text-secondary)',
-                  boxShadow: isActive ? '0 2px 8px rgba(56, 139, 253, 0.3)' : 'none',
-                  letterSpacing: '0.01em',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px',
+                  fontSize: '11px',
+                  fontWeight: 500,
+                  transition: 'all 0.3s cubic-bezier(0.22, 1, 0.36, 1)',
+                  backgroundColor: 'transparent',
+                  color: isActive ? 'var(--accent)' : 'var(--text-muted)',
+                  letterSpacing: '0.12em',
+                  textTransform: 'uppercase',
+                  fontFamily: 'var(--font-body)',
+                  marginBottom: '-1px',
+                  position: 'relative',
+                }}
+                onMouseEnter={(e) => {
+                  if (!isActive) {
+                    e.currentTarget.style.color = 'var(--text-secondary)'
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isActive) {
+                    e.currentTarget.style.color = 'var(--text-muted)'
+                  }
                 }}
               >
-                <span style={{ fontSize: '14px' }}>{tab.icon}</span>
                 {tab.label}
               </button>
             )
@@ -262,7 +272,7 @@ export default function Home() {
               <div style={{ 
                 display: 'flex', 
                 gap: '12px', 
-                marginBottom: '28px',
+                marginBottom: '32px',
                 flexWrap: 'wrap',
                 alignItems: 'center'
               }}>
@@ -274,13 +284,14 @@ export default function Home() {
                     onChange={(e) => setSearchQuery(e.target.value)}
                     style={{
                       width: '100%',
-                      padding: '10px 16px 10px 40px',
+                      padding: '10px 16px 10px 16px',
                       backgroundColor: 'var(--bg-secondary)',
                       border: '1px solid var(--border)',
                       borderRadius: 'var(--radius-md)',
                       color: 'var(--text-primary)',
                       fontSize: '13px',
-                      transition: 'border-color 0.2s, box-shadow 0.2s',
+                      fontFamily: 'var(--font-body)',
+                      transition: 'border-color 0.3s, box-shadow 0.3s',
                     }}
                     onFocus={(e) => {
                       e.currentTarget.style.borderColor = 'var(--accent)'
@@ -291,14 +302,6 @@ export default function Home() {
                       e.currentTarget.style.boxShadow = 'none'
                     }}
                   />
-                  <span style={{
-                    position: 'absolute',
-                    left: '14px',
-                    top: '50%',
-                    transform: 'translateY(-50%)',
-                    color: 'var(--text-muted)',
-                    fontSize: '14px',
-                  }}>🔍</span>
                 </div>
 
                 <select
@@ -312,7 +315,8 @@ export default function Home() {
                     color: 'var(--text-primary)',
                     fontSize: '13px',
                     cursor: 'pointer',
-                    transition: 'border-color 0.2s',
+                    transition: 'border-color 0.3s',
+                    fontFamily: 'var(--font-body)',
                   }}
                 >
                   <option value="all">All Categories</option>
@@ -392,7 +396,7 @@ export default function Home() {
             <div style={{
               backgroundColor: 'var(--bg-secondary)',
               borderRadius: 'var(--radius-lg)',
-              padding: '28px',
+              padding: '32px',
               border: '1px solid var(--border)',
               boxShadow: 'var(--shadow-sm)',
             }}>
@@ -400,25 +404,27 @@ export default function Home() {
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
-                marginBottom: '20px'
+                marginBottom: '8px'
               }}>
                 <h2 style={{ 
-                  fontSize: '18px', 
-                  fontWeight: 700, 
+                  fontFamily: 'var(--font-display)',
+                  fontSize: '22px', 
+                  fontWeight: 400, 
+                  fontStyle: 'italic',
                   color: 'var(--text-primary)',
                   margin: 0,
-                  letterSpacing: '-0.02em',
+                  letterSpacing: '-0.01em',
                 }}>
                   Quick Notes
                 </h2>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
                   {noteSaving && (
-                    <span style={{ color: 'var(--text-muted)', fontSize: '12px', fontWeight: 500 }}>
+                    <span style={{ color: 'var(--text-muted)', fontSize: '10px', fontWeight: 400, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
                       Saving...
                     </span>
                   )}
                   {noteLastSaved && !noteSaving && (
-                    <span style={{ color: 'var(--text-muted)', fontSize: '12px', fontWeight: 500 }}>
+                    <span style={{ color: 'var(--text-muted)', fontSize: '10px', fontWeight: 400, letterSpacing: '0.06em' }}>
                       Saved {noteLastSaved.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
                     </span>
                   )}
@@ -426,23 +432,28 @@ export default function Home() {
                     onClick={saveNotes}
                     disabled={noteSaving}
                     style={{
-                      padding: '8px 20px',
-                      background: 'var(--gradient-brand)',
-                      color: '#fff',
+                      padding: '8px 24px',
+                      background: 'var(--accent)',
+                      color: 'var(--bg-primary)',
                       border: 'none',
                       borderRadius: 'var(--radius-md)',
-                      fontSize: '13px',
+                      fontSize: '11px',
                       fontWeight: 600,
                       cursor: noteSaving ? 'not-allowed' : 'pointer',
                       opacity: noteSaving ? 0.7 : 1,
-                      transition: 'opacity 0.2s, transform 0.15s',
-                      boxShadow: '0 2px 8px rgba(56, 139, 253, 0.25)',
+                      transition: 'opacity 0.2s, transform 0.2s',
+                      letterSpacing: '0.06em',
+                      textTransform: 'uppercase',
+                      fontFamily: 'var(--font-body)',
                     }}
                   >
                     Save
                   </button>
                 </div>
               </div>
+
+              {/* Gold divider */}
+              <div style={{ width: '32px', height: '1px', background: 'var(--accent)', marginBottom: '24px', opacity: 0.4 }} />
 
               <textarea
                 value={noteContent}
@@ -455,13 +466,13 @@ export default function Home() {
                   backgroundColor: 'var(--bg-tertiary)',
                   border: '1px solid var(--border)',
                   borderRadius: 'var(--radius-md)',
-                  padding: '18px',
+                  padding: '20px',
                   color: 'var(--text-primary)',
                   resize: 'vertical',
                   fontSize: '14px',
-                  lineHeight: 1.7,
-                  fontFamily: 'inherit',
-                  transition: 'border-color 0.2s, box-shadow 0.2s',
+                  lineHeight: 1.8,
+                  fontFamily: 'var(--font-body)',
+                  transition: 'border-color 0.3s, box-shadow 0.3s',
                 }}
                 onFocus={(e) => {
                   e.currentTarget.style.borderColor = 'var(--accent)'
@@ -470,10 +481,9 @@ export default function Home() {
               />
               <p style={{ 
                 color: 'var(--text-muted)', 
-                fontSize: '12px', 
+                fontSize: '11px', 
                 marginTop: '12px',
                 fontStyle: 'italic',
-                letterSpacing: '0.01em',
               }}>
                 Notes are saved automatically when you click away or hit the Save button
               </p>
@@ -484,7 +494,7 @@ export default function Home() {
             <div style={{
               backgroundColor: 'var(--bg-secondary)',
               borderRadius: 'var(--radius-lg)',
-              padding: '28px',
+              padding: '32px',
               border: '1px solid var(--border)',
               boxShadow: 'var(--shadow-sm)',
             }}>
@@ -492,16 +502,16 @@ export default function Home() {
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
-                marginBottom: '24px',
-                paddingBottom: '16px',
-                borderBottom: '1px solid var(--border)',
+                marginBottom: '8px',
               }}>
                 <h2 style={{
-                  fontSize: '18px',
-                  fontWeight: 700,
+                  fontFamily: 'var(--font-display)',
+                  fontSize: '22px',
+                  fontWeight: 400,
+                  fontStyle: 'italic',
                   color: 'var(--text-primary)',
                   margin: 0,
-                  letterSpacing: '-0.02em',
+                  letterSpacing: '-0.01em',
                 }}>
                   Recent Activity
                 </h2>
@@ -509,62 +519,74 @@ export default function Home() {
                   onClick={loadActivities}
                   disabled={activitiesLoading}
                   style={{
-                    padding: '8px 16px',
-                    backgroundColor: 'var(--bg-tertiary)',
-                    color: 'var(--text-secondary)',
+                    padding: '8px 18px',
+                    backgroundColor: 'transparent',
+                    color: 'var(--text-muted)',
                     border: '1px solid var(--border)',
                     borderRadius: 'var(--radius-md)',
-                    fontSize: '12px',
-                    fontWeight: 600,
+                    fontSize: '10px',
+                    fontWeight: 500,
                     cursor: activitiesLoading ? 'not-allowed' : 'pointer',
                     opacity: activitiesLoading ? 0.7 : 1,
-                    transition: 'all 0.2s',
-                    letterSpacing: '0.02em',
+                    transition: 'all 0.3s ease',
+                    letterSpacing: '0.10em',
                     textTransform: 'uppercase',
+                    fontFamily: 'var(--font-body)',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.borderColor = 'var(--accent)'
+                    e.currentTarget.style.color = 'var(--accent)'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.borderColor = 'var(--border)'
+                    e.currentTarget.style.color = 'var(--text-muted)'
                   }}
                 >
                   {activitiesLoading ? 'Loading...' : 'Refresh'}
                 </button>
               </div>
 
+              {/* Gold divider */}
+              <div style={{ width: '32px', height: '1px', background: 'var(--accent)', marginBottom: '24px', opacity: 0.4 }} />
+
               {activitiesLoading && activities.length === 0 ? (
                 <div style={{
                   textAlign: 'center',
-                  padding: '48px',
+                  padding: '56px',
                   color: 'var(--text-muted)',
                 }}>
                   <div style={{
-                    width: '28px',
-                    height: '28px',
-                    border: '2px solid var(--bg-tertiary)',
+                    width: '24px',
+                    height: '24px',
+                    border: '1.5px solid var(--bg-tertiary)',
                     borderTopColor: 'var(--accent)',
                     borderRadius: '50%',
                     animation: 'spin 1s linear infinite',
-                    margin: '0 auto 12px',
+                    margin: '0 auto 14px',
                   }} />
-                  <span style={{ fontSize: '13px' }}>Loading activity...</span>
+                  <span style={{ fontSize: '10px', letterSpacing: '0.12em', textTransform: 'uppercase' }}>Loading activity</span>
                 </div>
               ) : activities.length === 0 ? (
                 <div style={{
                   textAlign: 'center',
-                  padding: '48px',
+                  padding: '56px',
                   color: 'var(--text-muted)',
                   fontSize: '13px',
+                  fontStyle: 'italic',
                 }}>
-                  <p style={{ fontSize: '28px', marginBottom: '12px', opacity: 0.6 }}>📊</p>
                   <p>No activity yet. Create, move, or delete tasks to see activity here.</p>
                 </div>
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-                  {activities.map((activity) => {
+                  {activities.map((activity, i) => {
                     const getIcon = () => {
                       switch (activity.type) {
-                        case 'task_created': return '✨'
-                        case 'task_moved': return '➡️'
-                        case 'task_completed': return '✅'
-                        case 'task_deleted': return '🗑️'
-                        case 'task_updated': return '✏️'
-                        default: return '📌'
+                        case 'task_created': return '+'
+                        case 'task_moved': return '\u2192'
+                        case 'task_completed': return '\u2713'
+                        case 'task_deleted': return '\u00D7'
+                        case 'task_updated': return '\u2022'
+                        default: return '\u2022'
                       }
                     }
 
@@ -617,32 +639,40 @@ export default function Home() {
                     return (
                       <div
                         key={activity.id}
+                        className="animate-fade-in-up"
                         style={{
                           display: 'flex',
                           alignItems: 'flex-start',
-                          gap: '12px',
+                          gap: '14px',
                           padding: '12px 10px',
                           borderRadius: 'var(--radius-md)',
-                          transition: 'background-color 0.2s',
+                          transition: 'background-color 0.2s ease, transform 0.3s cubic-bezier(0.22, 1, 0.36, 1)',
+                          animationDelay: `${i * 0.03}s`,
+                          animationFillMode: 'backwards',
+                          cursor: 'default',
                         }}
                         onMouseEnter={(e) => {
                           e.currentTarget.style.backgroundColor = 'var(--bg-tertiary)'
+                          e.currentTarget.style.transform = 'translateX(4px)'
                         }}
                         onMouseLeave={(e) => {
                           e.currentTarget.style.backgroundColor = 'transparent'
+                          e.currentTarget.style.transform = 'translateX(0)'
                         }}
                       >
                         <div style={{
-                          width: '30px',
-                          height: '30px',
+                          width: '28px',
+                          height: '28px',
                           borderRadius: '50%',
-                          backgroundColor: `${getColor()}12`,
+                          border: `1px solid ${getColor()}`,
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          fontSize: '13px',
+                          fontSize: '11px',
                           flexShrink: 0,
                           marginTop: '2px',
+                          color: getColor(),
+                          fontWeight: 600,
                         }}>
                           {getIcon()}
                         </div>
@@ -650,14 +680,11 @@ export default function Home() {
                         <div style={{ flex: 1, minWidth: 0 }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
                             <span style={{
-                              fontSize: '11px',
-                              fontWeight: 700,
+                              fontSize: '10px',
+                              fontWeight: 500,
                               textTransform: 'uppercase',
-                              letterSpacing: '0.04em',
+                              letterSpacing: '0.08em',
                               color: getColor(),
-                              padding: '2px 8px',
-                              borderRadius: '10px',
-                              backgroundColor: `${getColor()}12`,
                             }}>
                               {getLabel()}
                             </span>
@@ -668,6 +695,7 @@ export default function Home() {
                               overflow: 'hidden',
                               textOverflow: 'ellipsis',
                               whiteSpace: 'nowrap',
+                              letterSpacing: '-0.01em',
                             }}>
                               {activity.task_title}
                             </span>
@@ -675,7 +703,7 @@ export default function Home() {
 
                           {activity.from_status && activity.to_status && (
                             <div style={{
-                              fontSize: '12px',
+                              fontSize: '11px',
                               color: 'var(--text-muted)',
                               marginTop: '4px',
                               display: 'flex',
@@ -683,19 +711,21 @@ export default function Home() {
                               gap: '6px',
                             }}>
                               <span style={{
-                                padding: '1px 6px',
-                                borderRadius: '4px',
-                                backgroundColor: 'var(--bg-elevated)',
-                                fontSize: '11px',
+                                padding: '1px 8px',
+                                borderRadius: '20px',
+                                border: '1px solid var(--border)',
+                                fontSize: '10px',
+                                letterSpacing: '0.04em',
                               }}>
                                 {formatStatus(activity.from_status)}
                               </span>
-                              <span style={{ opacity: 0.5 }}>→</span>
+                              <span style={{ color: 'var(--accent)', fontSize: '12px' }}>{'\u2192'}</span>
                               <span style={{
-                                padding: '1px 6px',
-                                borderRadius: '4px',
-                                backgroundColor: 'var(--bg-elevated)',
-                                fontSize: '11px',
+                                padding: '1px 8px',
+                                borderRadius: '20px',
+                                border: '1px solid var(--border)',
+                                fontSize: '10px',
+                                letterSpacing: '0.04em',
                               }}>
                                 {formatStatus(activity.to_status)}
                               </span>
@@ -704,16 +734,17 @@ export default function Home() {
 
                           {activity.type === 'task_created' && activity.to_status && !activity.from_status && (
                             <div style={{
-                              fontSize: '12px',
+                              fontSize: '11px',
                               color: 'var(--text-muted)',
                               marginTop: '4px',
                             }}>
                               Added to{' '}
                               <span style={{
-                                padding: '1px 6px',
-                                borderRadius: '4px',
-                                backgroundColor: 'var(--bg-elevated)',
-                                fontSize: '11px',
+                                padding: '1px 8px',
+                                borderRadius: '20px',
+                                border: '1px solid var(--border)',
+                                fontSize: '10px',
+                                letterSpacing: '0.04em',
                               }}>
                                 {formatStatus(activity.to_status)}
                               </span>
@@ -722,16 +753,17 @@ export default function Home() {
 
                           {activity.type === 'task_deleted' && activity.from_status && (
                             <div style={{
-                              fontSize: '12px',
+                              fontSize: '11px',
                               color: 'var(--text-muted)',
                               marginTop: '4px',
                             }}>
                               Removed from{' '}
                               <span style={{
-                                padding: '1px 6px',
-                                borderRadius: '4px',
-                                backgroundColor: 'var(--bg-elevated)',
-                                fontSize: '11px',
+                                padding: '1px 8px',
+                                borderRadius: '20px',
+                                border: '1px solid var(--border)',
+                                fontSize: '10px',
+                                letterSpacing: '0.04em',
                               }}>
                                 {formatStatus(activity.from_status)}
                               </span>
@@ -740,7 +772,7 @@ export default function Home() {
 
                           {activity.details && (
                             <div style={{
-                              fontSize: '12px',
+                              fontSize: '11px',
                               color: 'var(--text-muted)',
                               marginTop: '4px',
                               fontStyle: 'italic',
@@ -751,11 +783,12 @@ export default function Home() {
                         </div>
 
                         <div style={{
-                          fontSize: '11px',
+                          fontSize: '10px',
                           color: 'var(--text-muted)',
                           whiteSpace: 'nowrap',
                           flexShrink: 0,
-                          marginTop: '2px',
+                          marginTop: '4px',
+                          letterSpacing: '0.02em',
                         }}
                           title={new Date(activity.created_at).toLocaleString()}
                         >
@@ -773,62 +806,103 @@ export default function Home() {
             <div style={{
               backgroundColor: 'var(--bg-secondary)',
               borderRadius: 'var(--radius-lg)',
-              padding: '28px',
+              padding: '32px',
               border: '1px solid var(--border)',
               boxShadow: 'var(--shadow-sm)',
             }}>
               <h2 style={{ 
-                fontSize: '18px', 
-                fontWeight: 700, 
-                marginBottom: '24px', 
+                fontFamily: 'var(--font-display)',
+                fontSize: '22px', 
+                fontWeight: 400, 
+                fontStyle: 'italic',
+                marginBottom: '8px', 
                 color: 'var(--text-primary)',
-                letterSpacing: '-0.02em',
+                letterSpacing: '-0.01em',
               }}>
                 Key Memories
               </h2>
+              {/* Gold divider */}
+              <div style={{ width: '32px', height: '1px', background: 'var(--accent)', marginBottom: '28px', opacity: 0.4 }} />
+
               <div style={{
                 display: 'grid',
                 gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
                 gap: '16px'
               }}>
                 {[
-                  { icon: '💼', title: 'Work', items: ['SWE at bank in Perth', 'Promotion incoming (Feb 2026)', '$80k → ~$130k base'], accent: 'var(--accent)' },
-                  { icon: '🎯', title: 'Goals', items: ['Buy house late 2026', 'AWS certs (Cloud + Dev)', 'Launch recipe app'], accent: 'var(--accent-2)' },
-                  { icon: '🏠', title: 'Home Buying', items: ['$40k deposit saved (cash + super)', 'Waiting for promotion', 'Perth market research'], accent: 'var(--success)' },
-                  { icon: '🤖', title: 'AI Stack', items: ['Clawdius (Kimi + Antigravity)', '5 Telegram groups', 'Daily briefings at 7am'], accent: 'var(--warning)' },
+                  { letter: 'W', title: 'Work', items: ['SWE at bank in Perth', 'Promotion incoming (Feb 2026)', '$80k \u2192 ~$130k base'], accent: 'var(--accent)' },
+                  { letter: 'G', title: 'Goals', items: ['Buy house late 2026', 'AWS certs (Cloud + Dev)', 'Launch recipe app'], accent: 'var(--accent-2)' },
+                  { letter: 'H', title: 'Home Buying', items: ['$40k deposit saved (cash + super)', 'Waiting for promotion', 'Perth market research'], accent: 'var(--success)' },
+                  { letter: 'A', title: 'AI Stack', items: ['Clawdius (Kimi + Antigravity)', '5 Telegram groups', 'Daily briefings at 7am'], accent: 'var(--warning)' },
                 ].map((card, i) => (
                   <div key={i} className="hover-lift animate-fade-in-up" style={{
                     backgroundColor: 'var(--bg-tertiary)',
-                    padding: '22px',
+                    padding: '24px',
                     borderRadius: 'var(--radius-md)',
-                    border: '1px solid var(--border)',
+                    border: '1px solid var(--border-subtle)',
                     animationDelay: `${i * 0.08}s`,
                     animationFillMode: 'backwards',
+                    position: 'relative',
                   }}>
-                    <h3 style={{ 
-                      color: card.accent, 
-                      fontWeight: 700, 
-                      marginBottom: '14px',
-                      fontSize: '14px',
+                    {/* Geometric corner */}
+                    <div style={{
+                      position: 'absolute',
+                      top: '16px',
+                      right: '16px',
+                      pointerEvents: 'none',
+                    }}>
+                      <div style={{ position: 'absolute', top: 0, right: 0, width: '20px', height: '1px', background: card.accent, opacity: 0.2 }} />
+                      <div style={{ position: 'absolute', top: 0, right: 0, width: '1px', height: '20px', background: card.accent, opacity: 0.2 }} />
+                    </div>
+
+                    <div style={{
                       display: 'flex',
                       alignItems: 'center',
-                      gap: '8px',
-                      letterSpacing: '-0.01em',
+                      gap: '12px',
+                      marginBottom: '16px',
                     }}>
-                      <span style={{ fontSize: '18px' }}>{card.icon}</span> {card.title}
-                    </h3>
+                      {/* Letter monogram */}
+                      <div style={{
+                        width: '32px',
+                        height: '32px',
+                        borderRadius: '50%',
+                        border: `1px solid ${card.accent}`,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: '14px',
+                        fontFamily: 'var(--font-display)',
+                        fontStyle: 'italic',
+                        color: card.accent,
+                        opacity: 0.9,
+                      }}>
+                        {card.letter}
+                      </div>
+                      <h3 style={{ 
+                        color: 'var(--text-primary)', 
+                        fontFamily: 'var(--font-display)',
+                        fontWeight: 400, 
+                        fontStyle: 'italic',
+                        fontSize: '16px',
+                        letterSpacing: '-0.01em',
+                      }}>
+                        {card.title}
+                      </h3>
+                    </div>
+
+                    {/* Gold divider */}
+                    <div style={{ width: '20px', height: '1px', background: card.accent, marginBottom: '14px', opacity: 0.3 }} />
+
                     <ul style={{ color: 'var(--text-secondary)', lineHeight: 2, fontSize: '13px', listStyle: 'none' }}>
                       {card.items.map((item, j) => (
                         <li key={j} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                           <span style={{ 
-                            color: card.accent, 
-                            fontSize: '6px',
-                            width: '6px',
-                            height: '6px',
+                            width: '4px',
+                            height: '4px',
                             borderRadius: '50%',
                             backgroundColor: card.accent,
                             flexShrink: 0,
-                            opacity: 0.7,
+                            opacity: 0.5,
                           }}>
                           </span>
                           {item}

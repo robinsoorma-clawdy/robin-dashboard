@@ -259,12 +259,12 @@ export default function TaskColumn({
     }
   }
 
-  const getColumnColor = () => {
+  const getColumnAccent = () => {
     switch (status) {
-      case 'todo': return 'var(--text-secondary)'
+      case 'todo': return 'var(--text-muted)'
       case 'in_progress': return 'var(--accent)'
       case 'done': return 'var(--success)'
-      default: return 'var(--text-secondary)'
+      default: return 'var(--text-muted)'
     }
   }
 
@@ -278,11 +278,11 @@ export default function TaskColumn({
   }
 
   const categoryColors: Record<string, string> = {
-    work: '#58a6ff',
-    project: '#a371f7',
-    career: '#3fb950',
-    finance: '#d29922',
-    personal: '#8b949e',
+    work: '#c9a84c',
+    project: '#8b7355',
+    career: '#34d399',
+    finance: '#e2a336',
+    personal: '#9a9486',
   }
 
   /* ---- Shared input styling ---- */
@@ -294,8 +294,8 @@ export default function TaskColumn({
     borderRadius: 'var(--radius-md)',
     color: 'var(--text-primary)',
     fontSize: '13px',
-    fontFamily: 'inherit',
-    transition: 'border-color 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+    fontFamily: 'var(--font-body)',
+    transition: 'border-color 0.3s cubic-bezier(0.22, 1, 0.36, 1)',
     outline: 'none',
   }
 
@@ -303,51 +303,54 @@ export default function TaskColumn({
     ...inputBase,
     cursor: 'pointer',
     appearance: 'none' as const,
-    backgroundImage: `url("data:image/svg+xml,%3Csvg width='10' height='6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238b949e' fill='none' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")`,
+    backgroundImage: `url("data:image/svg+xml,%3Csvg width='10' height='6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%239a9486' fill='none' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")`,
     backgroundRepeat: 'no-repeat',
     backgroundPosition: 'right 12px center',
     paddingRight: '32px',
   }
 
   const labelStyle: React.CSSProperties = {
-    fontSize: '11px',
-    fontWeight: 700,
+    fontSize: '10px',
+    fontWeight: 500,
     color: 'var(--text-muted)',
     textTransform: 'uppercase',
-    letterSpacing: '0.04em',
+    letterSpacing: '0.12em',
     lineHeight: 1,
   }
 
   const btnPrimary: React.CSSProperties = {
     flex: 1,
-    background: 'var(--gradient-brand)',
-    color: '#fff',
+    background: 'var(--accent)',
+    color: 'var(--bg-primary)',
     border: 'none',
     borderRadius: 'var(--radius-md)',
-    padding: '8px 16px',
-    fontSize: '13px',
+    padding: '9px 16px',
+    fontSize: '11px',
     fontWeight: 600,
     cursor: 'pointer',
-    transition: 'opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+    transition: 'all 0.3s cubic-bezier(0.22, 1, 0.36, 1)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     gap: '6px',
-    letterSpacing: '-0.01em',
+    letterSpacing: '0.06em',
+    textTransform: 'uppercase' as const,
+    fontFamily: 'var(--font-body)',
   }
 
   const btnSecondary: React.CSSProperties = {
     flex: 1,
-    backgroundColor: 'var(--bg-secondary)',
+    backgroundColor: 'transparent',
     color: 'var(--text-secondary)',
     border: '1px solid var(--border)',
     borderRadius: 'var(--radius-md)',
-    padding: '8px 16px',
-    fontSize: '13px',
+    padding: '9px 16px',
+    fontSize: '11px',
     fontWeight: 500,
     cursor: 'pointer',
-    transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
-    letterSpacing: '-0.01em',
+    transition: 'all 0.3s cubic-bezier(0.22, 1, 0.36, 1)',
+    letterSpacing: '0.04em',
+    fontFamily: 'var(--font-body)',
   }
 
   return (
@@ -357,54 +360,52 @@ export default function TaskColumn({
       style={{
         backgroundColor: isDragOver ? 'var(--accent-subtle)' : 'var(--bg-secondary)',
         borderRadius: 'var(--radius-lg)',
-        padding: '16px',
+        padding: '20px',
         border: `1px solid ${isDragOver ? 'var(--accent)' : 'var(--border)'}`,
-        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+        transition: 'all 0.35s cubic-bezier(0.22, 1, 0.36, 1)',
         minHeight: '200px',
         display: 'flex',
         flexDirection: 'column',
         boxShadow: isDragOver ? 'var(--shadow-glow)' : 'none',
       }}
     >
-      {/* Column Header */}
+      {/* Column Header — Editorial */}
       <div style={{
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        marginBottom: '16px',
-        paddingBottom: '12px',
+        marginBottom: '20px',
+        paddingBottom: '14px',
         borderBottom: '1px solid var(--border-subtle)',
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          {/* Left accent line instead of dot */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          {/* Vertical gold accent line */}
           <div style={{
-            width: '3px',
-            height: '16px',
-            borderRadius: '2px',
-            backgroundColor: getColumnColor(),
+            width: '2px',
+            height: '14px',
+            borderRadius: '1px',
+            backgroundColor: getColumnAccent(),
             flexShrink: 0,
           }} />
           <h3 style={{
-            fontSize: '11px',
-            fontWeight: 700,
-            color: 'var(--text-secondary)',
-            textTransform: 'uppercase',
-            letterSpacing: '0.04em',
+            fontFamily: 'var(--font-display)',
+            fontSize: '16px',
+            fontWeight: 400,
+            fontStyle: 'italic',
+            color: 'var(--text-primary)',
+            letterSpacing: '-0.01em',
             lineHeight: 1,
           }}>
             {title}
           </h3>
           <span style={{
-            backgroundColor: 'var(--bg-tertiary)',
+            backgroundColor: 'transparent',
             color: 'var(--text-muted)',
-            padding: '2px 8px',
-            borderRadius: '10px',
+            padding: '2px 0',
             fontSize: '11px',
-            fontWeight: 700,
-            minWidth: '20px',
-            textAlign: 'center',
-            lineHeight: '16px',
+            fontWeight: 400,
             letterSpacing: '0',
+            fontFamily: 'var(--font-body)',
           }}>
             {count}
           </span>
@@ -415,27 +416,28 @@ export default function TaskColumn({
       <div style={{
         display: 'flex',
         flexDirection: 'column',
-        gap: '8px',
+        gap: '6px',
         flex: 1,
         marginBottom: '12px',
       }}>
         {tasks.length === 0 && !showAddForm && (
           <div style={{
-            padding: '32px 16px',
+            padding: '36px 16px',
             textAlign: 'center',
             color: 'var(--text-muted)',
-            fontSize: '12px',
-            letterSpacing: '0.02em',
+            fontSize: '11px',
+            letterSpacing: '0.08em',
+            textTransform: 'uppercase',
             border: '1px dashed var(--border)',
             borderRadius: 'var(--radius-md)',
-            backgroundColor: 'rgba(22, 27, 34, 0.5)',
-            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            backgroundColor: 'rgba(15, 15, 20, 0.5)',
+            transition: 'all 0.3s cubic-bezier(0.22, 1, 0.36, 1)',
           }}>
             {isDragOver ? 'Drop here' : 'No tasks'}
           </div>
         )}
 
-        {tasks.map((task) => {
+        {tasks.map((task, taskIndex) => {
           const translateX = swipingTaskId === task.id && touchStartX !== null && touchCurrentX !== null
             ? touchCurrentX - touchStartX
             : 0
@@ -453,25 +455,24 @@ export default function TaskColumn({
                     padding: '16px',
                     borderRadius: 'var(--radius-md)',
                     border: '1px solid var(--border)',
-                    borderTop: 'none',
                     display: 'flex',
                     flexDirection: 'column',
                     gap: '12px',
                     opacity: isSaving ? 0.6 : 1,
                     pointerEvents: isSaving ? 'none' : 'auto',
-                    transition: 'opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+                    transition: 'opacity 0.3s ease',
                     position: 'relative',
                     overflow: 'hidden',
                   }}
                 >
-                  {/* Gradient accent border-top */}
+                  {/* Gold accent top */}
                   <div style={{
                     position: 'absolute',
                     top: 0,
                     left: 0,
                     right: 0,
-                    height: '2px',
-                    background: 'var(--gradient-brand)',
+                    height: '1px',
+                    background: 'var(--accent)',
                   }} />
 
                   {/* Validation Error */}
@@ -479,12 +480,11 @@ export default function TaskColumn({
                     <div style={{
                       padding: '8px 12px',
                       backgroundColor: 'var(--danger-subtle)',
-                      border: '1px solid rgba(248, 81, 73, 0.25)',
+                      border: '1px solid rgba(232, 72, 95, 0.2)',
                       borderRadius: 'var(--radius-sm)',
                       color: 'var(--danger)',
                       fontSize: '12px',
-                      fontWeight: 500,
-                      letterSpacing: '-0.01em',
+                      fontWeight: 400,
                     }}>
                       {validationError}
                     </div>
@@ -584,20 +584,14 @@ export default function TaskColumn({
                         cursor: isSaving ? 'not-allowed' : 'pointer',
                         opacity: isSaving ? 0.7 : 1,
                       }}
-                      onMouseEnter={(e) => {
-                        if (!isSaving) e.currentTarget.style.boxShadow = 'var(--shadow-glow)'
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.boxShadow = 'none'
-                      }}
                     >
                       {isSaving && (
                         <span style={{
                           display: 'inline-block',
                           width: '12px',
                           height: '12px',
-                          border: '2px solid rgba(255,255,255,0.3)',
-                          borderTopColor: '#fff',
+                          border: '1.5px solid rgba(8,8,10,0.3)',
+                          borderTopColor: 'var(--bg-primary)',
                           borderRadius: '50%',
                           animation: 'spin 0.6s linear infinite',
                         }} />
@@ -614,15 +608,13 @@ export default function TaskColumn({
                       }}
                       onMouseEnter={(e) => {
                         if (!isSaving) {
-                          e.currentTarget.style.backgroundColor = 'var(--bg-tertiary)'
-                          e.currentTarget.style.color = 'var(--text-primary)'
                           e.currentTarget.style.borderColor = 'var(--border-accent)'
+                          e.currentTarget.style.color = 'var(--text-primary)'
                         }
                       }}
                       onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = 'var(--bg-secondary)'
-                        e.currentTarget.style.color = 'var(--text-secondary)'
                         e.currentTarget.style.borderColor = 'var(--border)'
+                        e.currentTarget.style.color = 'var(--text-secondary)'
                       }}
                     >
                       Cancel
@@ -634,14 +626,14 @@ export default function TaskColumn({
                     fontSize: '10px',
                     color: 'var(--text-muted)',
                     textAlign: 'center',
-                    letterSpacing: '0.02em',
+                    letterSpacing: '0.04em',
                     marginTop: '-4px',
                   }}>
-                    Esc to cancel · ⌘/Ctrl+Enter to save
+                    Esc to cancel &middot; Cmd/Ctrl+Enter to save
                   </div>
                 </div>
               ) : (
-                /* ---- Normal Task Card ---- */
+                /* ---- Normal Task Card — Luxury Editorial ---- */
                 <div
                   draggable
                   onDragStart={() => {
@@ -661,44 +653,22 @@ export default function TaskColumn({
                   onTouchStart={(e) => handleTouchStart(e, task.id)}
                   onTouchMove={handleTouchMove}
                   onTouchEnd={() => handleTouchEnd(task)}
-                  className="task-card animate-slide-in"
+                  className="task-card animate-fade-in-up"
                   style={{
                     backgroundColor: 'var(--bg-tertiary)',
-                    padding: '12px 16px',
+                    padding: '14px 16px',
                     borderRadius: 'var(--radius-md)',
                     border: '1px solid var(--border-subtle)',
                     cursor: 'grab',
-                    boxShadow: draggedTask?.id === task.id ? 'var(--shadow-lg)' : 'var(--shadow-sm)',
-                    opacity: draggedTask?.id === task.id ? 0.5 : 1,
+                    boxShadow: draggedTask?.id === task.id ? 'var(--shadow-lg)' : 'none',
+                    opacity: draggedTask?.id === task.id ? 0.4 : 1,
                     position: 'relative',
                     transform: `translateX(${translateX}px)`,
                     zIndex: swipingTaskId === task.id ? 10 : 1,
+                    animationDelay: `${taskIndex * 0.04}s`,
+                    animationFillMode: 'backwards',
                   }}
                 >
-                  {/* Drag Handle Indicator */}
-                  <div style={{
-                    position: 'absolute',
-                    top: '10px',
-                    right: '10px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '2px',
-                    opacity: 0.25,
-                  }}>
-                    {[0, 1].map((row) => (
-                      <div key={row} style={{ display: 'flex', gap: '2px' }}>
-                        {[0, 1].map((col) => (
-                          <div key={col} style={{
-                            width: '3px',
-                            height: '3px',
-                            borderRadius: '50%',
-                            backgroundColor: 'var(--text-muted)',
-                          }} />
-                        ))}
-                      </div>
-                    ))}
-                  </div>
-
                   {/* Category & Priority */}
                   <div style={{
                     display: 'flex',
@@ -710,13 +680,13 @@ export default function TaskColumn({
                       display: 'inline-flex',
                       alignItems: 'center',
                       padding: '2px 8px',
-                      borderRadius: '10px',
-                      fontSize: '10px',
-                      fontWeight: 700,
+                      borderRadius: '20px',
+                      fontSize: '9px',
+                      fontWeight: 500,
                       textTransform: 'uppercase',
-                      letterSpacing: '0.04em',
-                      color: categoryColors[task.category] || '#6e7681',
-                      backgroundColor: `${categoryColors[task.category] || '#6e7681'}18`,
+                      letterSpacing: '0.08em',
+                      color: categoryColors[task.category] || '#9a9486',
+                      border: `1px solid ${categoryColors[task.category] || '#9a9486'}30`,
                       lineHeight: '18px',
                     }}>
                       {task.category}
@@ -726,39 +696,17 @@ export default function TaskColumn({
                       display: 'inline-flex',
                       alignItems: 'center',
                       padding: '2px 8px',
-                      borderRadius: '10px',
-                      fontSize: '10px',
-                      fontWeight: 700,
+                      borderRadius: '20px',
+                      fontSize: '9px',
+                      fontWeight: 500,
                       textTransform: 'uppercase',
-                      letterSpacing: '0.04em',
+                      letterSpacing: '0.08em',
                       color: getPriorityColor(task.priority || 'medium'),
-                      backgroundColor: `${getPriorityColor(task.priority || 'medium')}`.replace('var(', '').replace(')', '') === 'var(--text-muted)' 
-                        ? 'rgba(72, 79, 88, 0.15)'
-                        : undefined,
+                      border: `1px solid currentColor`,
+                      opacity: 0.7,
                       lineHeight: '18px',
-                    }}
-                    // Priority badge uses the semantic subtle vars
-                    >
-                      <span style={{
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        padding: '2px 8px',
-                        borderRadius: '10px',
-                        fontSize: '10px',
-                        fontWeight: 700,
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.04em',
-                        color: getPriorityColor(task.priority || 'medium'),
-                        backgroundColor: task.priority === 'high'
-                          ? 'var(--danger-subtle)'
-                          : task.priority === 'low'
-                            ? 'var(--success-subtle)'
-                            : 'var(--warning-subtle)',
-                        lineHeight: '18px',
-                        margin: '-2px -8px',
-                      }}>
-                        {task.priority || 'medium'}
-                      </span>
+                    }}>
+                      {task.priority || 'medium'}
                     </span>
                   </div>
 
@@ -778,11 +726,11 @@ export default function TaskColumn({
                   {/* Description */}
                   {task.description && (
                     <p style={{
-                      color: 'var(--text-secondary)',
+                      color: 'var(--text-muted)',
                       fontSize: '12px',
                       lineHeight: 1.5,
                       marginBottom: '8px',
-                      letterSpacing: '-0.005em',
+                      fontStyle: 'italic',
                     }}>
                       {task.description}
                     </p>
@@ -793,23 +741,24 @@ export default function TaskColumn({
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'space-between',
-                    marginTop: '8px',
-                    paddingTop: '8px',
+                    marginTop: '10px',
+                    paddingTop: '10px',
                     borderTop: '1px solid var(--border-subtle)',
                   }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                       <div style={{
-                        width: '20px',
-                        height: '20px',
+                        width: '18px',
+                        height: '18px',
                         borderRadius: '50%',
-                        backgroundColor: 'var(--accent-subtle)',
+                        border: '1px solid var(--accent)',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        fontSize: '10px',
+                        fontSize: '9px',
                         color: 'var(--accent)',
-                        fontWeight: 700,
-                        letterSpacing: '0',
+                        fontWeight: 500,
+                        fontFamily: 'var(--font-display)',
+                        fontStyle: 'italic',
                       }}>
                         R
                       </div>
@@ -822,17 +771,11 @@ export default function TaskColumn({
                         
                         return (
                           <span style={{
-                            fontSize: '11px',
+                            fontSize: '10px',
                             color: color,
                             fontWeight: isOverdue || isNearDue ? 600 : 400,
-                            letterSpacing: '-0.01em',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '4px',
+                            letterSpacing: '0.02em',
                           }}>
-                            <svg width="12" height="12" viewBox="0 0 16 16" fill="none" style={{ opacity: 0.8 }}>
-                              <path d="M8 1C4.13 1 1 4.13 1 8s3.13 7 7 7 7-3.13 7-7-3.13-7-7-7zm0 12.5c-3.03 0-5.5-2.47-5.5-5.5S4.97 2.5 8 2.5s5.5 2.47 5.5 5.5-2.47 5.5-5.5 5.5zm.5-9H7v4.5l3.94 2.36.56-.92L8.5 8.25V4.5z" fill="currentColor"/>
-                            </svg>
                             {new Date(task.due_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                           </span>
                         )
@@ -850,7 +793,7 @@ export default function TaskColumn({
                           borderRadius: 'var(--radius-sm)',
                           cursor: 'pointer',
                           color: 'var(--text-muted)',
-                          transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+                          transition: 'all 0.3s cubic-bezier(0.22, 1, 0.36, 1)',
                           fontSize: '12px',
                           display: 'flex',
                           alignItems: 'center',
@@ -881,7 +824,7 @@ export default function TaskColumn({
                           borderRadius: 'var(--radius-sm)',
                           cursor: 'pointer',
                           color: 'var(--text-muted)',
-                          transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+                          transition: 'all 0.3s cubic-bezier(0.22, 1, 0.36, 1)',
                           fontSize: '12px',
                           display: 'flex',
                           alignItems: 'center',
@@ -929,14 +872,14 @@ export default function TaskColumn({
                 overflow: 'hidden',
               }}
             >
-              {/* Gradient accent top */}
+              {/* Gold accent top */}
               <div style={{
                 position: 'absolute',
                 top: 0,
                 left: 0,
                 right: 0,
-                height: '2px',
-                background: 'var(--gradient-brand)',
+                height: '1px',
+                background: 'var(--accent)',
               }} />
 
               <input
@@ -1005,12 +948,6 @@ export default function TaskColumn({
                 <button
                   type="submit"
                   style={btnPrimary}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.boxShadow = 'var(--shadow-glow)'
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.boxShadow = 'none'
-                  }}
                 >
                   Add Task
                 </button>
@@ -1024,14 +961,12 @@ export default function TaskColumn({
                   }}
                   style={btnSecondary}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = 'var(--bg-tertiary)'
-                    e.currentTarget.style.color = 'var(--text-primary)'
                     e.currentTarget.style.borderColor = 'var(--border-accent)'
+                    e.currentTarget.style.color = 'var(--text-primary)'
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = 'var(--bg-secondary)'
-                    e.currentTarget.style.color = 'var(--text-secondary)'
                     e.currentTarget.style.borderColor = 'var(--border)'
+                    e.currentTarget.style.color = 'var(--text-secondary)'
                   }}
                 >
                   Cancel
@@ -1049,14 +984,16 @@ export default function TaskColumn({
                 color: 'var(--text-muted)',
                 backgroundColor: 'transparent',
                 cursor: 'pointer',
-                fontSize: '12px',
+                fontSize: '11px',
                 fontWeight: 500,
-                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                transition: 'all 0.3s cubic-bezier(0.22, 1, 0.36, 1)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 gap: '6px',
-                letterSpacing: '0.01em',
+                letterSpacing: '0.06em',
+                textTransform: 'uppercase',
+                fontFamily: 'var(--font-body)',
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.borderColor = 'var(--accent)'
@@ -1069,7 +1006,7 @@ export default function TaskColumn({
                 e.currentTarget.style.backgroundColor = 'transparent'
               }}
             >
-              <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+              <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor">
                 <path d="M7.25 1a.75.75 0 011.5 0v6.25H15a.75.75 0 010 1.5H8.75V15a.75.75 0 01-1.5 0V8.75H1a.75.75 0 010-1.5h6.25V1z"/>
               </svg>
               Add a task

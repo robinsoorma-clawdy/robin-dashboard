@@ -9,91 +9,117 @@ export default function Header() {
 
   return (
     <header style={{ 
-      background: 'linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-primary) 100%)',
+      background: 'var(--bg-primary)',
       borderBottom: '1px solid var(--border)',
-      padding: '40px 24px 36px',
+      padding: '48px 32px 40px',
       position: 'relative',
       overflow: 'hidden',
     }}>
-      {/* Subtle ambient glow behind header */}
+      {/* Ambient gold gradient */}
       <div style={{
         position: 'absolute',
-        top: '-60%',
-        left: '50%',
-        transform: 'translateX(-50%)',
-        width: '600px',
-        height: '300px',
-        background: 'radial-gradient(ellipse, rgba(56, 139, 253, 0.08) 0%, transparent 70%)',
+        top: '-80%',
+        left: '20%',
+        width: '500px',
+        height: '400px',
+        background: 'radial-gradient(ellipse, rgba(201, 168, 76, 0.06) 0%, transparent 70%)',
         pointerEvents: 'none',
       }} />
+
+      {/* Geometric accent — top-right corner */}
+      <div style={{
+        position: 'absolute',
+        top: '24px',
+        right: '32px',
+        width: '60px',
+        height: '60px',
+        pointerEvents: 'none',
+      }}>
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          right: 0,
+          width: '40px',
+          height: '1px',
+          background: 'var(--accent)',
+          opacity: 0.3,
+        }} />
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          right: 0,
+          width: '1px',
+          height: '40px',
+          background: 'var(--accent)',
+          opacity: 0.3,
+        }} />
+      </div>
 
       <div style={{ 
         maxWidth: '1400px', 
         margin: '0 auto',
         display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        textAlign: 'center',
+        alignItems: 'flex-end',
+        justifyContent: 'space-between',
         position: 'relative',
         zIndex: 1,
+        gap: '24px',
+        flexWrap: 'wrap',
       }}>
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '16px',
-          marginBottom: '14px'
-        }}>
-          <div style={{
-            width: '44px',
-            height: '44px',
-            borderRadius: 'var(--radius-md)',
-            background: 'var(--gradient-brand)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: '22px',
-            boxShadow: '0 0 20px rgba(56, 139, 253, 0.2)',
+        {/* Left: Asymmetric editorial layout */}
+        <div>
+          {/* Eyebrow */}
+          <p style={{ 
+            fontFamily: 'var(--font-body)',
+            fontSize: '10px',
+            fontWeight: 500,
+            letterSpacing: '0.18em',
+            textTransform: 'uppercase',
+            color: 'var(--accent)',
+            marginBottom: '12px',
           }}>
-            🎯
-          </div>
+            Mission Control
+          </p>
           
-          <div>
-            <h1 style={{ 
-              fontSize: 'clamp(24px, 5vw, 34px)', 
-              fontWeight: 800, 
-              background: 'var(--gradient-brand)',
-              backgroundSize: '200% 200%',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-              letterSpacing: '-0.03em',
-              lineHeight: 1.1,
-              animation: 'gradientFlow 6s ease infinite',
-            }}>
-              Robin&apos;s Mission Control
-            </h1>
-          </div>
+          <h1 style={{ 
+            fontFamily: 'var(--font-display)',
+            fontSize: 'clamp(32px, 5vw, 48px)', 
+            fontWeight: 400, 
+            fontStyle: 'italic',
+            color: 'var(--text-primary)',
+            letterSpacing: '-0.02em',
+            lineHeight: 1.05,
+            marginBottom: '0',
+          }}>
+            Robin
+          </h1>
+
+          {/* Gold divider line */}
+          <div style={{
+            width: '48px',
+            height: '1px',
+            background: 'var(--accent)',
+            marginTop: '16px',
+            opacity: 0.6,
+          }} />
         </div>
-        
-        <p style={{ 
-          color: 'var(--text-secondary)',
-          fontSize: '14px',
-          marginBottom: '6px',
-          letterSpacing: '0.01em',
-          fontWeight: 400,
+
+        {/* Right: Date & metadata */}
+        <div style={{
+          textAlign: 'right',
+          paddingBottom: '4px',
         }}>
-          Track tasks, projects, and daily activities
-        </p>
-        
-        <p style={{ 
-          color: 'var(--text-muted)',
-          fontSize: '12px',
-          fontWeight: 500,
-          letterSpacing: '0.04em',
-          textTransform: 'uppercase',
-        }}>
-          {dateStr}
-        </p>
+          <p style={{ 
+            fontFamily: 'var(--font-body)',
+            color: 'var(--text-muted)',
+            fontSize: '11px',
+            fontWeight: 400,
+            letterSpacing: '0.12em',
+            textTransform: 'uppercase',
+          }}>
+            {dateStr}
+          </p>
+        </div>
       </div>
     </header>
   )
