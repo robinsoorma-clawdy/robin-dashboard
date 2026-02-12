@@ -3,12 +3,18 @@
 @tailwind utilities;
 
 /* ================================================================
-   DESIGN SYSTEM — Luxury Obsidian Editorial
+   DESIGN SYSTEM — Multi-Vibe Architecture
+   5 distinct themes controlled via data-vibe attribute on <html>
+   ================================================================ */
+
+/* ================================================================
+   VIBE 1: LUXURY (Default) — Obsidian & Gold Editorial
    Typography: Playfair Display (display) + DM Sans (body)
    Palette: Deep obsidian, warm ivory, luxury gold
    ================================================================ */
 
-:root {
+:root,
+[data-vibe="luxury"] {
   /* ---- Background Layers (Deep Obsidian) ---- */
   --bg-primary:     #08080a;
   --bg-secondary:   #0f0f14;
@@ -62,7 +68,291 @@
   /* ---- Typography ---- */
   --font-display: 'Playfair Display', 'Georgia', 'Times New Roman', serif;
   --font-body: 'DM Sans', 'Helvetica Neue', 'Arial', sans-serif;
+
+  /* ---- Theme-specific effects ---- */
+  --noise-opacity: 0.035;
+  --card-backdrop: blur(16px) saturate(1.2);
+  --selection-bg: rgba(201, 168, 76, 0.25);
+  --scrollbar-thumb: rgba(201, 168, 76, 0.15);
+  --scrollbar-thumb-hover: rgba(201, 168, 76, 0.30);
 }
+
+/* ================================================================
+   VIBE 2: BRUTALIST — Raw, High-Contrast, Acid Green
+   Typography: Space Mono (display + body)
+   Palette: Pure black/white, acid green accents
+   ================================================================ */
+
+[data-vibe="brutalist"] {
+  /* ---- Background Layers ---- */
+  --bg-primary:     #000000;
+  --bg-secondary:   #0a0a0a;
+  --bg-tertiary:    #111111;
+  --bg-elevated:    #1a1a1a;
+  --bg-glass:       rgba(0, 0, 0, 0.90);
+
+  /* ---- Text Hierarchy ---- */
+  --text-primary:   #ffffff;
+  --text-secondary: #a0a0a0;
+  --text-muted:     #555555;
+
+  /* ---- Accent: Acid Green ---- */
+  --accent:         #39ff14;
+  --accent-hover:   #50ff30;
+  --accent-subtle:  rgba(57, 255, 20, 0.08);
+  --accent-glow:    rgba(57, 255, 20, 0.25);
+  --accent-2:       #ff3333;
+  --accent-2-subtle: rgba(255, 51, 51, 0.10);
+
+  /* ---- Semantic ---- */
+  --success:        #39ff14;
+  --success-subtle: rgba(57, 255, 20, 0.10);
+  --warning:        #ffff00;
+  --warning-subtle: rgba(255, 255, 0, 0.10);
+  --danger:         #ff0000;
+  --danger-subtle:  rgba(255, 0, 0, 0.10);
+
+  /* ---- Surfaces & Borders ---- */
+  --border:         rgba(255, 255, 255, 0.20);
+  --border-subtle:  rgba(255, 255, 255, 0.08);
+  --border-accent:  rgba(57, 255, 20, 0.50);
+
+  /* ---- Shadows ---- */
+  --shadow-sm:      none;
+  --shadow-md:      4px 4px 0 rgba(57, 255, 20, 0.15);
+  --shadow-lg:      8px 8px 0 rgba(57, 255, 20, 0.10);
+  --shadow-glow:    0 0 20px rgba(57, 255, 20, 0.20);
+
+  /* ---- Radii: ZERO — brutalist means no rounding ---- */
+  --radius-sm:      0px;
+  --radius-md:      0px;
+  --radius-lg:      0px;
+  --radius-xl:      0px;
+
+  /* ---- Gradients ---- */
+  --gradient-brand:   linear-gradient(135deg, #39ff14 0%, #00cc00 50%, #39ff14 100%);
+  --gradient-surface: linear-gradient(180deg, rgba(10, 10, 10, 0.95) 0%, rgba(0, 0, 0, 1) 100%);
+  --gradient-shimmer: linear-gradient(90deg, transparent 0%, rgba(57, 255, 20, 0.05) 50%, transparent 100%);
+
+  /* ---- Typography: Monospace everything ---- */
+  --font-display: 'Space Mono', 'Courier New', monospace;
+  --font-body: 'Space Mono', 'Courier New', monospace;
+
+  /* ---- Theme-specific ---- */
+  --noise-opacity: 0.06;
+  --card-backdrop: none;
+  --selection-bg: rgba(57, 255, 20, 0.30);
+  --scrollbar-thumb: rgba(57, 255, 20, 0.25);
+  --scrollbar-thumb-hover: rgba(57, 255, 20, 0.50);
+}
+
+/* ================================================================
+   VIBE 3: RETRO — 80s Sci-Fi, CRT, Neon
+   Typography: VT323 (display) + Share Tech Mono (body)
+   Palette: Deep navy, neon cyan/magenta/amber
+   ================================================================ */
+
+[data-vibe="retro"] {
+  /* ---- Background Layers (CRT Dark) ---- */
+  --bg-primary:     #0a0014;
+  --bg-secondary:   #0f0020;
+  --bg-tertiary:    #150030;
+  --bg-elevated:    #1a0040;
+  --bg-glass:       rgba(10, 0, 20, 0.85);
+
+  /* ---- Text Hierarchy (Phosphor Green/Amber) ---- */
+  --text-primary:   #00ffcc;
+  --text-secondary: #9980cc;
+  --text-muted:     #553399;
+
+  /* ---- Accent: Neon Magenta ---- */
+  --accent:         #ff00ff;
+  --accent-hover:   #ff44ff;
+  --accent-subtle:  rgba(255, 0, 255, 0.10);
+  --accent-glow:    rgba(255, 0, 255, 0.30);
+  --accent-2:       #00ccff;
+  --accent-2-subtle: rgba(0, 204, 255, 0.10);
+
+  /* ---- Semantic ---- */
+  --success:        #00ff88;
+  --success-subtle: rgba(0, 255, 136, 0.10);
+  --warning:        #ffaa00;
+  --warning-subtle: rgba(255, 170, 0, 0.10);
+  --danger:         #ff2244;
+  --danger-subtle:  rgba(255, 34, 68, 0.10);
+
+  /* ---- Surfaces & Borders ---- */
+  --border:         rgba(255, 0, 255, 0.20);
+  --border-subtle:  rgba(0, 255, 204, 0.08);
+  --border-accent:  rgba(255, 0, 255, 0.50);
+
+  /* ---- Shadows (Neon Glow) ---- */
+  --shadow-sm:      0 0 8px rgba(255, 0, 255, 0.15);
+  --shadow-md:      0 0 20px rgba(255, 0, 255, 0.20), 0 0 40px rgba(0, 255, 204, 0.08);
+  --shadow-lg:      0 0 40px rgba(255, 0, 255, 0.25), 0 0 80px rgba(0, 204, 255, 0.10);
+  --shadow-glow:    0 0 30px rgba(255, 0, 255, 0.20), 0 0 60px rgba(0, 255, 204, 0.10);
+
+  /* ---- Radii ---- */
+  --radius-sm:      2px;
+  --radius-md:      4px;
+  --radius-lg:      6px;
+  --radius-xl:      8px;
+
+  /* ---- Gradients ---- */
+  --gradient-brand:   linear-gradient(135deg, #ff00ff 0%, #00ccff 50%, #ff00ff 100%);
+  --gradient-surface: linear-gradient(180deg, rgba(15, 0, 32, 0.95) 0%, rgba(10, 0, 20, 1) 100%);
+  --gradient-shimmer: linear-gradient(90deg, transparent 0%, rgba(255, 0, 255, 0.06) 50%, transparent 100%);
+
+  /* ---- Typography ---- */
+  --font-display: 'VT323', 'Courier New', monospace;
+  --font-body: 'Share Tech Mono', 'Courier New', monospace;
+
+  /* ---- Theme-specific ---- */
+  --noise-opacity: 0.05;
+  --card-backdrop: blur(8px) saturate(1.5);
+  --selection-bg: rgba(255, 0, 255, 0.30);
+  --scrollbar-thumb: rgba(255, 0, 255, 0.25);
+  --scrollbar-thumb-hover: rgba(255, 0, 255, 0.50);
+}
+
+/* ================================================================
+   VIBE 4: ORGANIC — Soft, Muted, Natural
+   Typography: Lora (display) + Inter (body)
+   Palette: Warm earth tones, sage, clay, sand
+   ================================================================ */
+
+[data-vibe="organic"] {
+  /* ---- Background Layers (Warm Parchment) ---- */
+  --bg-primary:     #f5f0e8;
+  --bg-secondary:   #ebe4d8;
+  --bg-tertiary:    #e0d8ca;
+  --bg-elevated:    #d6ccbc;
+  --bg-glass:       rgba(245, 240, 232, 0.85);
+
+  /* ---- Text Hierarchy (Earthy Dark) ---- */
+  --text-primary:   #2c2416;
+  --text-secondary: #6b5d4d;
+  --text-muted:     #9a8b78;
+
+  /* ---- Accent: Sage Green ---- */
+  --accent:         #6b8f71;
+  --accent-hover:   #7da383;
+  --accent-subtle:  rgba(107, 143, 113, 0.12);
+  --accent-glow:    rgba(107, 143, 113, 0.15);
+  --accent-2:       #b4845c;
+  --accent-2-subtle: rgba(180, 132, 92, 0.12);
+
+  /* ---- Semantic ---- */
+  --success:        #5a9e6f;
+  --success-subtle: rgba(90, 158, 111, 0.12);
+  --warning:        #c9944a;
+  --warning-subtle: rgba(201, 148, 74, 0.12);
+  --danger:         #c45c5c;
+  --danger-subtle:  rgba(196, 92, 92, 0.12);
+
+  /* ---- Surfaces & Borders ---- */
+  --border:         rgba(107, 93, 77, 0.15);
+  --border-subtle:  rgba(107, 93, 77, 0.08);
+  --border-accent:  rgba(107, 143, 113, 0.30);
+
+  /* ---- Shadows (Soft, warm) ---- */
+  --shadow-sm:      0 1px 3px rgba(44, 36, 22, 0.08);
+  --shadow-md:      0 4px 16px rgba(44, 36, 22, 0.08);
+  --shadow-lg:      0 8px 32px rgba(44, 36, 22, 0.10);
+  --shadow-glow:    0 0 20px rgba(107, 143, 113, 0.10);
+
+  /* ---- Radii (Generous, fluid) ---- */
+  --radius-sm:      6px;
+  --radius-md:      12px;
+  --radius-lg:      18px;
+  --radius-xl:      28px;
+
+  /* ---- Gradients ---- */
+  --gradient-brand:   linear-gradient(135deg, #6b8f71 0%, #b4845c 50%, #6b8f71 100%);
+  --gradient-surface: linear-gradient(180deg, rgba(235, 228, 216, 0.9) 0%, rgba(245, 240, 232, 0.95) 100%);
+  --gradient-shimmer: linear-gradient(90deg, transparent 0%, rgba(107, 143, 113, 0.06) 50%, transparent 100%);
+
+  /* ---- Typography ---- */
+  --font-display: 'Lora', 'Georgia', serif;
+  --font-body: 'Inter', 'Helvetica Neue', sans-serif;
+
+  /* ---- Theme-specific ---- */
+  --noise-opacity: 0.02;
+  --card-backdrop: blur(20px) saturate(1.1);
+  --selection-bg: rgba(107, 143, 113, 0.20);
+  --scrollbar-thumb: rgba(107, 93, 77, 0.15);
+  --scrollbar-thumb-hover: rgba(107, 93, 77, 0.30);
+}
+
+/* ================================================================
+   VIBE 5: SWISS — International Typographic Style
+   Typography: Inter (display + body) — Akzidenz-inspired
+   Palette: Pure white, black, primary colors (red, blue, yellow)
+   ================================================================ */
+
+[data-vibe="swiss"] {
+  /* ---- Background Layers (Clean White) ---- */
+  --bg-primary:     #fafafa;
+  --bg-secondary:   #f0f0f0;
+  --bg-tertiary:    #e5e5e5;
+  --bg-elevated:    #d9d9d9;
+  --bg-glass:       rgba(250, 250, 250, 0.92);
+
+  /* ---- Text Hierarchy (Pure Black) ---- */
+  --text-primary:   #0a0a0a;
+  --text-secondary: #555555;
+  --text-muted:     #999999;
+
+  /* ---- Accent: Swiss Red ---- */
+  --accent:         #e20000;
+  --accent-hover:   #ff1a1a;
+  --accent-subtle:  rgba(226, 0, 0, 0.06);
+  --accent-glow:    rgba(226, 0, 0, 0.10);
+  --accent-2:       #0055cc;
+  --accent-2-subtle: rgba(0, 85, 204, 0.06);
+
+  /* ---- Semantic ---- */
+  --success:        #008800;
+  --success-subtle: rgba(0, 136, 0, 0.08);
+  --warning:        #cc8800;
+  --warning-subtle: rgba(204, 136, 0, 0.08);
+  --danger:         #e20000;
+  --danger-subtle:  rgba(226, 0, 0, 0.06);
+
+  /* ---- Surfaces & Borders ---- */
+  --border:         rgba(0, 0, 0, 0.12);
+  --border-subtle:  rgba(0, 0, 0, 0.06);
+  --border-accent:  rgba(226, 0, 0, 0.30);
+
+  /* ---- Shadows (Minimal) ---- */
+  --shadow-sm:      0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-md:      0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-lg:      0 4px 16px rgba(0, 0, 0, 0.10);
+  --shadow-glow:    none;
+
+  /* ---- Radii (Sharp, geometric) ---- */
+  --radius-sm:      2px;
+  --radius-md:      3px;
+  --radius-lg:      4px;
+  --radius-xl:      6px;
+
+  /* ---- Gradients ---- */
+  --gradient-brand:   linear-gradient(135deg, #e20000 0%, #0055cc 50%, #e20000 100%);
+  --gradient-surface: linear-gradient(180deg, rgba(240, 240, 240, 0.9) 0%, rgba(250, 250, 250, 0.95) 100%);
+  --gradient-shimmer: linear-gradient(90deg, transparent 0%, rgba(226, 0, 0, 0.04) 50%, transparent 100%);
+
+  /* ---- Typography: Clean grotesque ---- */
+  --font-display: 'Inter', 'Helvetica Neue', 'Arial', sans-serif;
+  --font-body: 'Inter', 'Helvetica Neue', 'Arial', sans-serif;
+
+  /* ---- Theme-specific ---- */
+  --noise-opacity: 0;
+  --card-backdrop: blur(12px);
+  --selection-bg: rgba(226, 0, 0, 0.15);
+  --scrollbar-thumb: rgba(0, 0, 0, 0.12);
+  --scrollbar-thumb-hover: rgba(0, 0, 0, 0.25);
+}
+
 
 /* ================================================================
    BASE RESET & TYPOGRAPHY
@@ -88,6 +378,8 @@ body {
   color: var(--text-primary);
   background-color: var(--bg-primary);
   position: relative;
+  transition: background-color 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+              color 0.5s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 /* ---- Noise texture overlay for depth ---- */
@@ -100,14 +392,114 @@ body::after {
   height: 100%;
   pointer-events: none;
   z-index: 9999;
-  opacity: 0.035;
+  opacity: var(--noise-opacity);
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
   background-repeat: repeat;
   background-size: 128px 128px;
+  transition: opacity 0.5s ease;
 }
 
 /* ================================================================
-   REFINED SCROLLBAR
+   RETRO VIBE — CRT Scanline Effect
+   ================================================================ */
+
+[data-vibe="retro"] body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9998;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.08) 0px,
+    rgba(0, 0, 0, 0.08) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  animation: crtFlicker 0.1s infinite alternate;
+}
+
+@keyframes crtFlicker {
+  0%   { opacity: 0.97; }
+  100% { opacity: 1; }
+}
+
+/* Retro CRT text glow on headings */
+[data-vibe="retro"] h1,
+[data-vibe="retro"] h2,
+[data-vibe="retro"] h3 {
+  text-shadow: 0 0 10px rgba(0, 255, 204, 0.3), 0 0 20px rgba(255, 0, 255, 0.15);
+}
+
+/* ================================================================
+   BRUTALIST VIBE — Harsh Border Overrides
+   ================================================================ */
+
+[data-vibe="brutalist"] .task-card {
+  border: 2px solid rgba(255, 255, 255, 0.20) !important;
+}
+
+[data-vibe="brutalist"] .task-card:hover {
+  border-color: var(--accent) !important;
+  transform: none !important;
+  box-shadow: 6px 6px 0 var(--accent) !important;
+}
+
+[data-vibe="brutalist"] .hover-lift:hover {
+  transform: none;
+  box-shadow: 6px 6px 0 var(--accent);
+}
+
+[data-vibe="brutalist"] button {
+  text-transform: uppercase !important;
+  letter-spacing: 0.08em !important;
+}
+
+/* ================================================================
+   ORGANIC VIBE — Soft touches
+   ================================================================ */
+
+[data-vibe="organic"] .task-card:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: var(--shadow-md) !important;
+}
+
+[data-vibe="organic"] .hover-lift:hover {
+  transform: translateY(-2px);
+}
+
+/* Paper texture for organic */
+[data-vibe="organic"] body::after {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.5' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  opacity: 0.03;
+}
+
+/* ================================================================
+   SWISS VIBE — Grid-focused, minimal
+   ================================================================ */
+
+[data-vibe="swiss"] .hover-lift:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+[data-vibe="swiss"] .task-card:hover {
+  transform: none !important;
+  box-shadow: var(--shadow-md) !important;
+  border-color: var(--accent) !important;
+}
+
+[data-vibe="swiss"] .geo-corner::before,
+[data-vibe="swiss"] .geo-corner::after,
+[data-vibe="swiss"] .geo-line::before {
+  display: none;
+}
+
+/* ================================================================
+   REFINED SCROLLBAR (theme-aware)
    ================================================================ */
 
 ::-webkit-scrollbar {
@@ -120,16 +512,16 @@ body::after {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(201, 168, 76, 0.15);
+  background: var(--scrollbar-thumb);
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(201, 168, 76, 0.30);
+  background: var(--scrollbar-thumb-hover);
 }
 
 /* ================================================================
-   FOCUS RING — Gold accessible focus
+   FOCUS RING (theme-aware)
    ================================================================ */
 
 button:focus-visible,
@@ -142,15 +534,42 @@ textarea:focus-visible {
 }
 
 /* ================================================================
-   GLASS CARD UTILITY
+   GLASS CARD UTILITY (theme-aware)
    ================================================================ */
 
 .glass-card {
   background: var(--bg-glass);
-  backdrop-filter: blur(16px) saturate(1.2);
-  -webkit-backdrop-filter: blur(16px) saturate(1.2);
+  backdrop-filter: var(--card-backdrop);
+  -webkit-backdrop-filter: var(--card-backdrop);
   border: 1px solid var(--border);
 }
+
+/* ================================================================
+   THEME TRANSITION — Smooth color changes
+   ================================================================ */
+
+*, *::before, *::after {
+  transition-property: background-color, border-color, color, box-shadow, opacity;
+  transition-duration: 0.35s;
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Opt-out for elements that have their own animation timing */
+.animate-slide-in,
+.animate-fade-in,
+.animate-fade-in-up,
+.animate-scale-in,
+.animate-pulse-subtle,
+.animate-shimmer,
+.animate-gradient,
+.animate-glow,
+.animate-float,
+.modal-overlay,
+.modal-content,
+.dragging {
+  transition: none;
+}
+
 
 /* ================================================================
    KEYFRAME ANIMATIONS
@@ -260,6 +679,23 @@ textarea:focus-visible {
   }
 }
 
+/* Vibe Switcher */
+@keyframes vibeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes vibeRotate {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
 /* ================================================================
    ANIMATION UTILITY CLASSES
    ================================================================ */
@@ -341,7 +777,7 @@ textarea:focus-visible {
 }
 
 /* ================================================================
-   INTERACTIVE STATES — Editorial Hover
+   INTERACTIVE STATES
    ================================================================ */
 
 .hover-lift {
@@ -442,7 +878,7 @@ textarea:focus-visible {
 
 .task-card:hover {
   transform: translateY(-2px) scale(1.01);
-  box-shadow: var(--shadow-md), 0 0 0 1px rgba(201, 168, 76, 0.08);
+  box-shadow: var(--shadow-md), 0 0 0 1px var(--accent-subtle);
   border-color: var(--border-accent);
 }
 
@@ -527,11 +963,11 @@ textarea:focus-visible {
 }
 
 /* ================================================================
-   SELECTION STYLE
+   SELECTION STYLE (theme-aware)
    ================================================================ */
 
 ::selection {
-  background-color: rgba(201, 168, 76, 0.25);
+  background-color: var(--selection-bg);
   color: var(--text-primary);
 }
 
@@ -556,7 +992,7 @@ textarea:focus-visible {
 }
 
 /* ================================================================
-   GOLD DIVIDER
+   GOLD DIVIDER (theme-aware — adapts to accent)
    ================================================================ */
 
 .divider-gold {
@@ -564,4 +1000,133 @@ textarea:focus-visible {
   height: 1px;
   background: linear-gradient(90deg, transparent 0%, var(--accent) 50%, transparent 100%);
   opacity: 0.2;
+}
+
+/* ================================================================
+   VIBE SWITCHER STYLES
+   ================================================================ */
+
+.vibe-switcher-trigger {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9990;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1px solid var(--border-accent);
+  background: var(--bg-elevated);
+  color: var(--accent);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  box-shadow: var(--shadow-md);
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.3s ease,
+              border-color 0.3s ease;
+}
+
+.vibe-switcher-trigger:hover {
+  transform: scale(1.08);
+  box-shadow: var(--shadow-lg), var(--shadow-glow);
+  border-color: var(--accent);
+}
+
+.vibe-switcher-trigger:active {
+  transform: scale(0.96);
+}
+
+.vibe-switcher-panel {
+  position: fixed;
+  bottom: 84px;
+  right: 24px;
+  z-index: 9990;
+  width: 220px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  padding: 8px;
+  animation: vibeSlideIn 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.vibe-switcher-option {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 12px;
+  font-family: var(--font-body);
+  text-align: left;
+  transition: all 0.2s ease;
+}
+
+.vibe-switcher-option:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-color: var(--border-subtle);
+}
+
+.vibe-switcher-option.active {
+  background: var(--accent-subtle);
+  color: var(--accent);
+  border-color: var(--border-accent);
+  font-weight: 600;
+}
+
+.vibe-switcher-option .vibe-icon {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid currentColor;
+  font-size: 11px;
+  flex-shrink: 0;
+}
+
+.vibe-switcher-option .vibe-label {
+  flex: 1;
+  line-height: 1;
+}
+
+.vibe-switcher-option .vibe-label small {
+  display: block;
+  font-size: 9px;
+  opacity: 0.6;
+  margin-top: 2px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+}
+
+.vibe-switcher-header {
+  padding: 6px 12px 8px;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  font-family: var(--font-body);
+}
+
+/* Keyboard shortcut hint */
+.vibe-kbd {
+  display: inline-block;
+  padding: 1px 5px;
+  font-size: 9px;
+  font-family: var(--font-body);
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  color: var(--text-muted);
+  margin-left: auto;
 }
