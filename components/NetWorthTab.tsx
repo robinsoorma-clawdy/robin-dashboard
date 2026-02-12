@@ -11,19 +11,16 @@ import {
   CartesianGrid, 
   Tooltip, 
   ResponsiveContainer,
-  BarChart,
-  Bar,
-  Cell
 } from 'recharts'
 
 const CATEGORIES: { value: NetWorthCategory; label: string; color: string }[] = [
-  { value: 'salary', label: 'Salary', color: 'var(--accent)' },
+  { value: 'salary', label: 'Salary', color: '#388bfd' },
   { value: 'super', label: 'Super', color: '#a371f7' },
-  { value: 'investments', label: 'Investments', color: 'var(--warning)' },
-  { value: 'cash', label: 'Cash', color: 'var(--success)' },
+  { value: 'investments', label: 'Investments', color: '#d29922' },
+  { value: 'cash', label: 'Cash', color: '#3fb950' },
   { value: 'crypto', label: 'Crypto', color: '#f7931a' },
   { value: 'property', label: 'Property', color: '#f85149' },
-  { value: 'other', label: 'Other', color: 'var(--text-muted)' },
+  { value: 'other', label: 'Other', color: '#484f58' },
 ]
 
 export default function NetWorthTab() {
@@ -32,7 +29,6 @@ export default function NetWorthTab() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
   
-  // Form state
   const [formData, setFormData] = useState({
     date: new Date().toISOString().split('T')[0],
     category: 'cash' as NetWorthCategory,
@@ -152,7 +148,6 @@ export default function NetWorthTab() {
       amount: entry.amount.toString(),
       notes: entry.notes || ''
     })
-    // Scroll to form
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
@@ -169,7 +164,6 @@ export default function NetWorthTab() {
     }
   }
 
-  // Process data for the chart
   const chartData = useMemo(() => {
     const groupedByDate: Record<string, any> = {}
     
@@ -182,11 +176,6 @@ export default function NetWorthTab() {
       groupedByDate[date][entry.category] = (groupedByDate[date][entry.category] || 0) + Number(entry.amount)
     })
 
-    // Calculate running total for each date (assuming entries are point-in-time snapshots)
-    // Actually, usually net worth entries are "current balance at this date".
-    // If we have multiple entries for the same category on the same date, we sum them.
-    // To show a true timeline, we should probably take the LATEST balance of each category for each date.
-    
     const sortedDates = Object.keys(groupedByDate).sort()
     const result = sortedDates.map(date => {
       const data = groupedByDate[date]
@@ -200,11 +189,9 @@ export default function NetWorthTab() {
     return result
   }, [entries])
 
-  // Get current breakdown (latest entries for each category)
   const breakdown = useMemo(() => {
     const latestByCategory: Record<string, number> = {}
     
-    // Sort entries by date desc to find the most recent ones
     const sortedEntries = [...entries].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     
     const categoriesFound = new Set()
@@ -221,12 +208,11 @@ export default function NetWorthTab() {
       ...cat,
       amount: latestByCategory[cat.value] || 0,
       percentage: total > 0 ? ((latestByCategory[cat.value] || 0) / total) * 100 : 0
-    })).filter(c => c.amount > 0 || c.value === 'cash') // Always show cash
+    })).filter(c => c.amount > 0 || c.value === 'cash')
   }, [entries])
 
   const currentTotal = breakdown.reduce((sum, item) => sum + item.amount, 0)
 
-  // Calculate percentage change from the previous month's data point
   const percentageChange = useMemo(() => {
     if (chartData.length < 2) return null
     const current = chartData[chartData.length - 1].total
@@ -235,53 +221,116 @@ export default function NetWorthTab() {
     return ((current - previous) / previous) * 100
   }, [chartData])
 
+  const inputStyle: React.CSSProperties = {
+    backgroundColor: 'var(--bg-tertiary)',
+    border: '1px solid var(--border)',
+    borderRadius: 'var(--radius-md)',
+    padding: '10px 14px',
+    color: 'var(--text-primary)',
+    fontSize: '13px',
+    transition: 'border-color 0.2s, box-shadow 0.2s',
+    width: '100%',
+  }
+
   if (loading) {
-    return <div style={{ color: 'var(--text-muted)', textAlign: 'center', padding: '40px' }}>Loading Net Worth data...</div>
+    return (
+      <div style={{ color: 'var(--text-muted)', textAlign: 'center', padding: '48px' }}>
+        <div style={{
+          width: '28px',
+          height: '28px',
+          border: '2px solid var(--bg-tertiary)',
+          borderTopColor: 'var(--accent)',
+          borderRadius: '50%',
+          animation: 'spin 1s linear infinite',
+          margin: '0 auto 12px',
+        }} />
+        <span style={{ fontSize: '13px' }}>Loading Net Worth data...</span>
+      </div>
+    )
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-      {/* Top Section: Big Number & Chart */}
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+      {/* Top Section */}
       <div style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
-        gap: '24px'
+        gap: '20px'
       }}>
-        {/* Big Number Display */}
-        <div style={{
+        {/* Big Number */}
+        <div className="animate-fade-in-up" style={{
           backgroundColor: 'var(--bg-secondary)',
           borderRadius: 'var(--radius-lg)',
-          padding: '24px',
+          padding: '32px',
           border: '1px solid var(--border)',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',
           alignItems: 'center',
-          textAlign: 'center'
+          textAlign: 'center',
+          boxShadow: 'var(--shadow-sm)',
+          position: 'relative',
+          overflow: 'hidden',
         }}>
-          <h3 style={{ fontSize: '14px', color: 'var(--text-secondary)', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '1px' }}>
+          {/* Background glow */}
+          <div style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: '300px',
+            height: '300px',
+            background: 'radial-gradient(ellipse, rgba(56, 139, 253, 0.06) 0%, transparent 70%)',
+            pointerEvents: 'none',
+          }} />
+
+          <h3 style={{ 
+            fontSize: '11px', 
+            color: 'var(--text-muted)', 
+            marginBottom: '8px', 
+            textTransform: 'uppercase', 
+            letterSpacing: '0.1em',
+            fontWeight: 700,
+            position: 'relative',
+          }}>
             Current Net Worth
           </h3>
-          <div style={{ fontSize: '48px', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '4px' }}>
+          <div style={{ 
+            fontSize: '44px', 
+            fontWeight: 800, 
+            background: 'var(--gradient-brand)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+            marginBottom: '8px',
+            letterSpacing: '-0.03em',
+            lineHeight: 1.1,
+            position: 'relative',
+          }}>
             ${currentTotal.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
           </div>
           {percentageChange !== null ? (
             <div style={{ 
-              fontSize: '14px', 
+              fontSize: '13px', 
               color: percentageChange >= 0 ? 'var(--success)' : 'var(--danger)', 
               fontWeight: 600,
               display: 'flex',
               alignItems: 'center',
-              gap: '4px'
+              gap: '4px',
+              padding: '4px 12px',
+              borderRadius: '20px',
+              backgroundColor: percentageChange >= 0 ? 'var(--success-subtle)' : 'var(--danger-subtle)',
+              position: 'relative',
             }}>
               <span>{percentageChange >= 0 ? '▲' : '▼'}</span>
-              <span>{percentageChange >= 0 ? '+' : ''}{percentageChange.toFixed(1)}% vs previous month</span>
+              <span>{percentageChange >= 0 ? '+' : ''}{percentageChange.toFixed(1)}% vs previous</span>
             </div>
           ) : (
             <div style={{ 
-              fontSize: '14px', 
+              fontSize: '12px', 
               color: 'var(--text-muted)', 
-              fontWeight: 600,
+              fontWeight: 500,
+              position: 'relative',
             }}>
               No previous data to compare
             </div>
@@ -289,37 +338,47 @@ export default function NetWorthTab() {
         </div>
 
         {/* Chart */}
-        <div style={{
+        <div className="animate-fade-in-up" style={{
           backgroundColor: 'var(--bg-secondary)',
           borderRadius: 'var(--radius-lg)',
           padding: '24px',
           border: '1px solid var(--border)',
-          height: '300px'
+          height: '300px',
+          boxShadow: 'var(--shadow-sm)',
+          animationDelay: '0.08s',
+          animationFillMode: 'backwards',
         }}>
-          <h3 style={{ fontSize: '16px', fontWeight: 600, marginBottom: '16px', color: 'var(--text-primary)' }}>
+          <h3 style={{ 
+            fontSize: '13px', 
+            fontWeight: 700, 
+            marginBottom: '16px', 
+            color: 'var(--text-secondary)',
+            letterSpacing: '0.04em',
+            textTransform: 'uppercase',
+          }}>
             Growth Over Time
           </h3>
           <ResponsiveContainer width="100%" height="80%">
             <AreaChart data={chartData}>
               <defs>
                 <linearGradient id="colorTotal" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="var(--accent)" stopOpacity={0.3}/>
-                  <stop offset="95%" stopColor="var(--accent)" stopOpacity={0}/>
+                  <stop offset="5%" stopColor="#388bfd" stopOpacity={0.25}/>
+                  <stop offset="95%" stopColor="#388bfd" stopOpacity={0}/>
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(48, 54, 61, 0.4)" vertical={false} />
               <XAxis 
                 dataKey="date" 
-                stroke="var(--text-muted)" 
-                fontSize={12}
+                stroke="#484f58" 
+                fontSize={11}
                 tickFormatter={(str) => {
                   const d = new Date(str)
                   return d.toLocaleDateString('en-US', { month: 'short', year: '2-digit' })
                 }}
               />
               <YAxis 
-                stroke="var(--text-muted)" 
-                fontSize={12}
+                stroke="#484f58" 
+                fontSize={11}
                 tickFormatter={(value) => `$${value / 1000}k`}
               />
               <Tooltip 
@@ -327,9 +386,11 @@ export default function NetWorthTab() {
                   backgroundColor: 'var(--bg-elevated)', 
                   border: '1px solid var(--border)',
                   borderRadius: 'var(--radius-md)',
-                  color: 'var(--text-primary)'
+                  color: 'var(--text-primary)',
+                  boxShadow: 'var(--shadow-lg)',
+                  fontSize: '13px',
                 }}
-                itemStyle={{ color: 'var(--accent)' }}
+                itemStyle={{ color: '#388bfd' }}
                 formatter={(value: number | undefined) => {
                   if (value === undefined) return ['', 'Total Net Worth']
                   return [`$${value.toLocaleString()}`, 'Total Net Worth']
@@ -338,10 +399,10 @@ export default function NetWorthTab() {
               <Area 
                 type="monotone" 
                 dataKey="total" 
-                stroke="var(--accent)" 
+                stroke="#388bfd" 
                 fillOpacity={1} 
                 fill="url(#colorTotal)" 
-                strokeWidth={3}
+                strokeWidth={2.5}
               />
             </AreaChart>
           </ResponsiveContainer>
@@ -351,41 +412,58 @@ export default function NetWorthTab() {
       <div style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-        gap: '24px'
+        gap: '20px'
       }}>
         {/* Category Breakdown */}
-        <div style={{
+        <div className="animate-fade-in-up" style={{
           backgroundColor: 'var(--bg-secondary)',
           borderRadius: 'var(--radius-lg)',
           padding: '24px',
-          border: '1px solid var(--border)'
+          border: '1px solid var(--border)',
+          boxShadow: 'var(--shadow-sm)',
+          animationDelay: '0.12s',
+          animationFillMode: 'backwards',
         }}>
-          <h3 style={{ fontSize: '18px', fontWeight: 600, marginBottom: '20px', color: 'var(--text-primary)' }}>
+          <h3 style={{ 
+            fontSize: '13px', 
+            fontWeight: 700, 
+            marginBottom: '20px', 
+            color: 'var(--text-secondary)',
+            letterSpacing: '0.04em',
+            textTransform: 'uppercase',
+          }}>
             Category Breakdown
           </h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             {breakdown.map(item => (
               <div key={item.value}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px', fontSize: '14px' }}>
-                  <span style={{ color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: item.color }} />
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px', fontSize: '13px' }}>
+                  <span style={{ color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 500 }}>
+                    <div style={{ 
+                      width: '8px', 
+                      height: '8px', 
+                      borderRadius: '50%', 
+                      backgroundColor: item.color,
+                      boxShadow: `0 0 6px ${item.color}40`,
+                    }} />
                     {item.label}
                   </span>
-                  <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>
-                    ${item.amount.toLocaleString()} ({item.percentage.toFixed(1)}%)
+                  <span style={{ color: 'var(--text-primary)', fontWeight: 700, fontSize: '12px' }}>
+                    ${item.amount.toLocaleString()} <span style={{ color: 'var(--text-muted)', fontWeight: 500 }}>({item.percentage.toFixed(1)}%)</span>
                   </span>
                 </div>
                 <div style={{ 
-                  height: '8px', 
+                  height: '6px', 
                   backgroundColor: 'var(--bg-tertiary)', 
-                  borderRadius: '4px',
+                  borderRadius: '3px',
                   overflow: 'hidden'
                 }}>
-                  <div style={{ 
+                  <div className="progress-bar-fill" style={{ 
                     width: `${item.percentage}%`, 
                     height: '100%', 
                     backgroundColor: item.color,
-                    borderRadius: '4px'
+                    borderRadius: '3px',
+                    transition: 'width 0.8s cubic-bezier(0.4, 0, 0.2, 1)',
                   }} />
                 </div>
               </div>
@@ -394,14 +472,24 @@ export default function NetWorthTab() {
         </div>
 
         {/* Add Entry Form */}
-        <div style={{
+        <div className="animate-fade-in-up" style={{
           backgroundColor: 'var(--bg-secondary)',
           borderRadius: 'var(--radius-lg)',
           padding: '24px',
-          border: '1px solid var(--border)'
+          border: '1px solid var(--border)',
+          boxShadow: 'var(--shadow-sm)',
+          animationDelay: '0.16s',
+          animationFillMode: 'backwards',
         }}>
-          <h3 style={{ fontSize: '18px', fontWeight: 600, marginBottom: '20px', color: 'var(--text-primary)' }}>
-            Add New Entry
+          <h3 style={{ 
+            fontSize: '13px', 
+            fontWeight: 700, 
+            marginBottom: '20px', 
+            color: 'var(--text-secondary)',
+            letterSpacing: '0.04em',
+            textTransform: 'uppercase',
+          }}>
+            {editingId ? 'Edit Entry' : 'Add New Entry'}
           </h3>
           {entries.length === 0 && (
             <button 
@@ -416,44 +504,32 @@ export default function NetWorthTab() {
                 padding: '12px',
                 marginBottom: '16px',
                 fontWeight: 600,
-                cursor: 'pointer'
+                cursor: 'pointer',
+                fontSize: '13px',
+                transition: 'all 0.2s',
               }}
             >
-              🌱 Initialize with Seed Data
+              Initialize with Seed Data
             </button>
           )}
-          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                <label style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Date</label>
+                <label style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 600, letterSpacing: '0.04em', textTransform: 'uppercase' }}>Date</label>
                 <input 
                   type="date" 
                   value={formData.date}
                   onChange={e => setFormData({ ...formData, date: e.target.value })}
                   required
-                  style={{
-                    backgroundColor: 'var(--bg-tertiary)',
-                    border: '1px solid var(--border)',
-                    borderRadius: 'var(--radius-md)',
-                    padding: '8px 12px',
-                    color: 'var(--text-primary)',
-                    fontSize: '14px'
-                  }}
+                  style={{ ...inputStyle, colorScheme: 'dark' }}
                 />
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                <label style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Category</label>
+                <label style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 600, letterSpacing: '0.04em', textTransform: 'uppercase' }}>Category</label>
                 <select 
                   value={formData.category}
                   onChange={e => setFormData({ ...formData, category: e.target.value as NetWorthCategory })}
-                  style={{
-                    backgroundColor: 'var(--bg-tertiary)',
-                    border: '1px solid var(--border)',
-                    borderRadius: 'var(--radius-md)',
-                    padding: '8px 12px',
-                    color: 'var(--text-primary)',
-                    fontSize: '14px'
-                  }}
+                  style={inputStyle}
                 >
                   {CATEGORIES.map(cat => (
                     <option key={cat.value} value={cat.value}>{cat.label}</option>
@@ -463,39 +539,25 @@ export default function NetWorthTab() {
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              <label style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Amount ($)</label>
+              <label style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 600, letterSpacing: '0.04em', textTransform: 'uppercase' }}>Amount ($)</label>
               <input 
                 type="number" 
                 placeholder="0.00"
                 value={formData.amount}
                 onChange={e => setFormData({ ...formData, amount: e.target.value })}
                 required
-                style={{
-                  backgroundColor: 'var(--bg-tertiary)',
-                  border: '1px solid var(--border)',
-                  borderRadius: 'var(--radius-md)',
-                  padding: '8px 12px',
-                  color: 'var(--text-primary)',
-                  fontSize: '14px'
-                }}
+                style={inputStyle}
               />
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              <label style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Notes</label>
+              <label style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 600, letterSpacing: '0.04em', textTransform: 'uppercase' }}>Notes</label>
               <input 
                 type="text" 
                 placeholder="Optional notes"
                 value={formData.notes}
                 onChange={e => setFormData({ ...formData, notes: e.target.value })}
-                style={{
-                  backgroundColor: 'var(--bg-tertiary)',
-                  border: '1px solid var(--border)',
-                  borderRadius: 'var(--radius-md)',
-                  padding: '8px 12px',
-                  color: 'var(--text-primary)',
-                  fontSize: '14px'
-                }}
+                style={inputStyle}
               />
             </div>
 
@@ -503,15 +565,18 @@ export default function NetWorthTab() {
               type="submit"
               disabled={isSubmitting}
               style={{
-                backgroundColor: 'var(--accent)',
+                background: 'var(--gradient-brand)',
                 color: '#fff',
                 border: 'none',
                 borderRadius: 'var(--radius-md)',
-                padding: '10px',
+                padding: '11px',
                 fontWeight: 600,
                 cursor: isSubmitting ? 'not-allowed' : 'pointer',
                 opacity: isSubmitting ? 0.7 : 1,
-                marginTop: '8px'
+                marginTop: '4px',
+                fontSize: '13px',
+                boxShadow: '0 2px 8px rgba(56, 139, 253, 0.25)',
+                transition: 'opacity 0.2s, transform 0.15s',
               }}
             >
               {isSubmitting ? 'Saving...' : (editingId ? 'Update Entry' : 'Add Entry')}
@@ -528,9 +593,11 @@ export default function NetWorthTab() {
                   color: 'var(--text-secondary)',
                   border: '1px solid var(--border)',
                   borderRadius: 'var(--radius-md)',
-                  padding: '8px',
+                  padding: '9px',
                   fontSize: '13px',
-                  cursor: 'pointer'
+                  cursor: 'pointer',
+                  fontWeight: 500,
+                  transition: 'all 0.2s',
                 }}
               >
                 Cancel Edit
@@ -540,84 +607,123 @@ export default function NetWorthTab() {
         </div>
       </div>
 
-      {/* Recent Entries List */}
-      <div style={{
+      {/* Recent Entries */}
+      <div className="animate-fade-in-up" style={{
         backgroundColor: 'var(--bg-secondary)',
         borderRadius: 'var(--radius-lg)',
         padding: '24px',
-        border: '1px solid var(--border)'
+        border: '1px solid var(--border)',
+        boxShadow: 'var(--shadow-sm)',
+        animationDelay: '0.2s',
+        animationFillMode: 'backwards',
       }}>
-        <h3 style={{ fontSize: '18px', fontWeight: 600, marginBottom: '20px', color: 'var(--text-primary)' }}>
+        <h3 style={{ 
+          fontSize: '13px', 
+          fontWeight: 700, 
+          marginBottom: '20px', 
+          color: 'var(--text-secondary)',
+          letterSpacing: '0.04em',
+          textTransform: 'uppercase',
+        }}>
           Recent Entries
         </h3>
         <div style={{ overflowX: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
               <tr style={{ borderBottom: '1px solid var(--border)' }}>
-                <th style={{ textAlign: 'left', padding: '12px', color: 'var(--text-muted)', fontSize: '13px' }}>Date</th>
-                <th style={{ textAlign: 'left', padding: '12px', color: 'var(--text-muted)', fontSize: '13px' }}>Category</th>
-                <th style={{ textAlign: 'left', padding: '12px', color: 'var(--text-muted)', fontSize: '13px' }}>Amount</th>
-                <th style={{ textAlign: 'left', padding: '12px', color: 'var(--text-muted)', fontSize: '13px' }}>Notes</th>
-                <th style={{ textAlign: 'right', padding: '12px', color: 'var(--text-muted)', fontSize: '13px' }}>Actions</th>
+                <th style={{ textAlign: 'left', padding: '10px 12px', color: 'var(--text-muted)', fontSize: '11px', fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase' }}>Date</th>
+                <th style={{ textAlign: 'left', padding: '10px 12px', color: 'var(--text-muted)', fontSize: '11px', fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase' }}>Category</th>
+                <th style={{ textAlign: 'left', padding: '10px 12px', color: 'var(--text-muted)', fontSize: '11px', fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase' }}>Amount</th>
+                <th style={{ textAlign: 'left', padding: '10px 12px', color: 'var(--text-muted)', fontSize: '11px', fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase' }}>Notes</th>
+                <th style={{ textAlign: 'right', padding: '10px 12px', color: 'var(--text-muted)', fontSize: '11px', fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase' }}>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {[...entries].reverse().slice(0, 10).map(entry => (
-                <tr key={entry.id} style={{ borderBottom: '1px solid var(--border-subtle)' }}>
-                  <td style={{ padding: '12px', fontSize: '14px' }}>{new Date(entry.date).toLocaleDateString()}</td>
-                  <td style={{ padding: '12px', fontSize: '14px' }}>
-                    <span style={{ 
-                      padding: '2px 8px', 
-                      borderRadius: '10px', 
-                      backgroundColor: `${CATEGORIES.find(c => c.value === entry.category)?.color}20`,
-                      color: CATEGORIES.find(c => c.value === entry.category)?.color,
-                      fontSize: '12px',
-                      fontWeight: 600,
-                      textTransform: 'capitalize'
-                    }}>
-                      {entry.category}
-                    </span>
-                  </td>
-                  <td style={{ padding: '12px', fontSize: '14px', fontWeight: 600 }}>
-                    ${Number(entry.amount).toLocaleString()}
-                  </td>
-                  <td style={{ padding: '12px', fontSize: '14px', color: 'var(--text-secondary)' }}>
-                    {entry.notes || '-'}
-                  </td>
-                  <td style={{ padding: '12px', textAlign: 'right' }}>
-                    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
-                      <button 
-                        onClick={() => handleEdit(entry)}
-                        style={{
-                          background: 'none',
-                          border: 'none',
-                          color: 'var(--accent)',
-                          cursor: 'pointer',
-                          fontSize: '13px',
-                        }}
-                      >
-                        Edit
-                      </button>
-                      <button 
-                        onClick={() => handleDelete(entry.id)}
-                        style={{
-                          background: 'none',
-                          border: 'none',
-                          color: 'var(--danger)',
-                          cursor: 'pointer',
-                          fontSize: '13px',
-                        }}
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+              {[...entries].reverse().slice(0, 10).map(entry => {
+                const catInfo = CATEGORIES.find(c => c.value === entry.category)
+                return (
+                  <tr key={entry.id} style={{ 
+                    borderBottom: '1px solid var(--border-subtle)',
+                    transition: 'background-color 0.15s',
+                  }}>
+                    <td style={{ padding: '12px', fontSize: '13px', color: 'var(--text-secondary)' }}>
+                      {new Date(entry.date).toLocaleDateString()}
+                    </td>
+                    <td style={{ padding: '12px', fontSize: '13px' }}>
+                      <span style={{ 
+                        padding: '3px 10px', 
+                        borderRadius: '10px', 
+                        backgroundColor: `${catInfo?.color}15`,
+                        color: catInfo?.color,
+                        fontSize: '11px',
+                        fontWeight: 700,
+                        textTransform: 'capitalize',
+                        letterSpacing: '0.02em',
+                      }}>
+                        {entry.category}
+                      </span>
+                    </td>
+                    <td style={{ padding: '12px', fontSize: '13px', fontWeight: 700, color: 'var(--text-primary)' }}>
+                      ${Number(entry.amount).toLocaleString()}
+                    </td>
+                    <td style={{ padding: '12px', fontSize: '13px', color: 'var(--text-muted)' }}>
+                      {entry.notes || '-'}
+                    </td>
+                    <td style={{ padding: '12px', textAlign: 'right' }}>
+                      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '6px' }}>
+                        <button 
+                          onClick={() => handleEdit(entry)}
+                          style={{
+                            background: 'none',
+                            border: 'none',
+                            color: 'var(--accent)',
+                            cursor: 'pointer',
+                            fontSize: '12px',
+                            fontWeight: 600,
+                            padding: '4px 8px',
+                            borderRadius: 'var(--radius-sm)',
+                            transition: 'all 0.15s',
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.backgroundColor = 'var(--accent-subtle)'
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.backgroundColor = 'transparent'
+                          }}
+                        >
+                          Edit
+                        </button>
+                        <button 
+                          onClick={() => handleDelete(entry.id)}
+                          style={{
+                            background: 'none',
+                            border: 'none',
+                            color: 'var(--danger)',
+                            cursor: 'pointer',
+                            fontSize: '12px',
+                            fontWeight: 600,
+                            padding: '4px 8px',
+                            borderRadius: 'var(--radius-sm)',
+                            transition: 'all 0.15s',
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.backgroundColor = 'var(--danger-subtle)'
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.backgroundColor = 'transparent'
+                          }}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                )
+              })}
             </tbody>
           </table>
           {entries.length === 0 && (
-            <div style={{ textAlign: 'center', padding: '32px', color: 'var(--text-muted)' }}>
+            <div style={{ textAlign: 'center', padding: '36px', color: 'var(--text-muted)', fontSize: '13px' }}>
               No entries found. Start by adding your first entry above.
             </div>
           )}

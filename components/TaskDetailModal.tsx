@@ -266,8 +266,9 @@ export default function TaskDetailModal({ task, onClose }: TaskDetailModalProps)
         left: 0,
         right: 0,
         bottom: 0,
-        backgroundColor: 'rgba(0, 0, 0, 0.6)',
-        backdropFilter: 'blur(4px)',
+        backgroundColor: 'rgba(0, 0, 0, 0.7)',
+        backdropFilter: 'blur(8px)',
+        WebkitBackdropFilter: 'blur(8px)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -279,17 +280,26 @@ export default function TaskDetailModal({ task, onClose }: TaskDetailModalProps)
         className="modal-content"
         style={{
           backgroundColor: 'var(--bg-secondary)',
-          borderRadius: 'var(--radius-lg)',
+          borderRadius: 'var(--radius-xl)',
           border: '1px solid var(--border)',
           width: '100%',
-          maxWidth: '680px',
+          maxWidth: '700px',
           maxHeight: 'calc(100vh - 48px)',
           display: 'flex',
           flexDirection: 'column',
-          boxShadow: '0 24px 48px rgba(0, 0, 0, 0.5)',
+          boxShadow: 'var(--shadow-lg), var(--shadow-glow)',
           overflow: 'hidden',
         }}
       >
+        {/* Gradient accent bar */}
+        <div
+          style={{
+            height: '3px',
+            background: 'var(--gradient-brand)',
+            flexShrink: 0,
+          }}
+        />
+
         {/* Header */}
         <div
           style={{
@@ -306,14 +316,14 @@ export default function TaskDetailModal({ task, onClose }: TaskDetailModalProps)
                   style={{
                     display: 'inline-flex',
                     alignItems: 'center',
-                    padding: '4px 10px',
-                    borderRadius: '12px',
-                    fontSize: '11px',
+                    padding: '3px 10px',
+                    borderRadius: 'var(--radius-sm)',
+                    fontSize: '10px',
                     fontWeight: 600,
                     textTransform: 'uppercase',
-                    letterSpacing: '0.3px',
-                    color: '#fff',
-                    backgroundColor: getCategoryColor(task.category),
+                    letterSpacing: '0.05em',
+                    color: getCategoryColor(task.category),
+                    backgroundColor: `${getCategoryColor(task.category)}14`,
                   }}
                 >
                   {task.category}
@@ -322,14 +332,14 @@ export default function TaskDetailModal({ task, onClose }: TaskDetailModalProps)
                   style={{
                     display: 'inline-flex',
                     alignItems: 'center',
-                    padding: '4px 10px',
-                    borderRadius: '12px',
-                    fontSize: '11px',
+                    padding: '3px 10px',
+                    borderRadius: 'var(--radius-sm)',
+                    fontSize: '10px',
                     fontWeight: 600,
                     textTransform: 'uppercase',
-                    letterSpacing: '0.3px',
+                    letterSpacing: '0.05em',
                     color: getPriorityColor(task.priority || 'medium'),
-                    backgroundColor: `${getPriorityColor(task.priority || 'medium')}20`,
+                    backgroundColor: `${getPriorityColor(task.priority || 'medium')}14`,
                   }}
                 >
                   {task.priority || 'medium'}
@@ -338,14 +348,14 @@ export default function TaskDetailModal({ task, onClose }: TaskDetailModalProps)
                   style={{
                     display: 'inline-flex',
                     alignItems: 'center',
-                    padding: '4px 10px',
-                    borderRadius: '12px',
-                    fontSize: '11px',
+                    padding: '3px 10px',
+                    borderRadius: 'var(--radius-sm)',
+                    fontSize: '10px',
                     fontWeight: 600,
                     textTransform: 'uppercase',
-                    letterSpacing: '0.3px',
+                    letterSpacing: '0.05em',
                     color: getStatusColor(task.status),
-                    backgroundColor: `${getStatusColor(task.status)}15`,
+                    backgroundColor: `${getStatusColor(task.status)}14`,
                   }}
                 >
                   {formatStatus(task.status)}
@@ -354,11 +364,12 @@ export default function TaskDetailModal({ task, onClose }: TaskDetailModalProps)
 
               {/* Title */}
               <h2 style={{
-                fontSize: '20px',
+                fontSize: '18px',
                 fontWeight: 600,
                 color: 'var(--text-primary)',
                 margin: 0,
                 lineHeight: 1.4,
+                letterSpacing: '-0.02em',
               }}>
                 {task.title}
               </h2>
@@ -368,20 +379,24 @@ export default function TaskDetailModal({ task, onClose }: TaskDetailModalProps)
             <button
               onClick={onClose}
               style={{
-                padding: '6px',
+                width: '32px',
+                height: '32px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
                 backgroundColor: 'transparent',
                 border: 'none',
-                borderRadius: 'var(--radius-sm)',
+                borderRadius: '50%',
                 cursor: 'pointer',
                 color: 'var(--text-muted)',
-                fontSize: '18px',
+                fontSize: '16px',
                 lineHeight: 1,
-                transition: 'all 0.2s',
+                transition: 'all 0.2s ease',
                 flexShrink: 0,
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.color = 'var(--text-primary)'
-                e.currentTarget.style.backgroundColor = 'var(--bg-tertiary)'
+                e.currentTarget.style.backgroundColor = 'var(--bg-elevated)'
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.color = 'var(--text-muted)'
@@ -396,8 +411,9 @@ export default function TaskDetailModal({ task, onClose }: TaskDetailModalProps)
           {task.description && (
             <p style={{
               color: 'var(--text-secondary)',
-              fontSize: '14px',
+              fontSize: '13px',
               lineHeight: 1.6,
+              letterSpacing: '-0.01em',
               marginTop: '12px',
               marginBottom: 0,
             }}>
@@ -410,8 +426,9 @@ export default function TaskDetailModal({ task, onClose }: TaskDetailModalProps)
             gap: '16px',
             marginTop: '12px',
             flexWrap: 'wrap',
-            fontSize: '13px',
+            fontSize: '12px',
             color: 'var(--text-muted)',
+            letterSpacing: '-0.01em',
           }}>
             <span>Created {new Date(task.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
             {task.due_date && (() => {
@@ -449,29 +466,31 @@ export default function TaskDetailModal({ task, onClose }: TaskDetailModalProps)
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               style={{
-                padding: '12px 16px',
+                padding: '10px 16px',
                 backgroundColor: 'transparent',
                 border: 'none',
                 borderBottom: `2px solid ${activeTab === tab.id ? 'var(--accent)' : 'transparent'}`,
                 cursor: 'pointer',
-                fontSize: '14px',
+                fontSize: '13px',
                 fontWeight: activeTab === tab.id ? 600 : 400,
                 color: activeTab === tab.id ? 'var(--text-primary)' : 'var(--text-muted)',
-                transition: 'all 0.2s',
+                transition: 'color 0.2s ease, border-color 0.2s ease',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '6px',
+                letterSpacing: '-0.01em',
               }}
             >
               {tab.label}
               {tab.count > 0 && (
                 <span style={{
-                  backgroundColor: activeTab === tab.id ? 'var(--accent)' : 'var(--bg-tertiary)',
-                  color: activeTab === tab.id ? '#fff' : 'var(--text-muted)',
+                  backgroundColor: activeTab === tab.id ? 'var(--accent-subtle)' : 'var(--bg-tertiary)',
+                  color: activeTab === tab.id ? 'var(--accent)' : 'var(--text-muted)',
                   padding: '1px 7px',
                   borderRadius: '10px',
-                  fontSize: '11px',
+                  fontSize: '10px',
                   fontWeight: 600,
+                  transition: 'all 0.2s ease',
                 }}>
                   {tab.count}
                 </span>
@@ -492,17 +511,18 @@ export default function TaskDetailModal({ task, onClose }: TaskDetailModalProps)
                 padding: '16px 24px',
                 display: 'flex',
                 flexDirection: 'column',
-                gap: '12px',
+                gap: '16px',
               }}>
                 {commentsLoading ? (
                   <div style={{
                     textAlign: 'center',
                     padding: '32px',
                     color: 'var(--text-muted)',
+                    fontSize: '12px',
                   }}>
                     <div style={{
-                      width: '24px',
-                      height: '24px',
+                      width: '20px',
+                      height: '20px',
                       border: '2px solid var(--bg-tertiary)',
                       borderTopColor: 'var(--accent)',
                       borderRadius: '50%',
@@ -516,18 +536,20 @@ export default function TaskDetailModal({ task, onClose }: TaskDetailModalProps)
                     textAlign: 'center',
                     padding: '40px 20px',
                     color: 'var(--text-muted)',
-                    fontSize: '14px',
+                    fontSize: '13px',
+                    letterSpacing: '-0.01em',
                   }}>
-                    <p style={{ fontSize: '28px', marginBottom: '8px' }}>💬</p>
+                    <p style={{ fontSize: '24px', marginBottom: '8px', opacity: 0.6 }}>💬</p>
                     <p>No comments yet. Start the discussion!</p>
                   </div>
                 ) : (
                   comments.map((comment) => (
                     <div
                       key={comment.id}
+                      className="animate-fade-in-up"
                       style={{
                         display: 'flex',
-                        gap: '10px',
+                        gap: '12px',
                         alignItems: 'flex-start',
                       }}
                     >
@@ -536,15 +558,16 @@ export default function TaskDetailModal({ task, onClose }: TaskDetailModalProps)
                         width: '28px',
                         height: '28px',
                         borderRadius: '50%',
-                        backgroundColor: 'var(--accent-subtle)',
+                        background: 'var(--gradient-brand)',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        fontSize: '12px',
-                        color: 'var(--accent)',
-                        fontWeight: 600,
+                        fontSize: '11px',
+                        color: '#fff',
+                        fontWeight: 700,
                         flexShrink: 0,
                         marginTop: '2px',
+                        letterSpacing: '0',
                       }}>
                         {comment.created_by.charAt(0).toUpperCase()}
                       </div>
@@ -558,15 +581,16 @@ export default function TaskDetailModal({ task, onClose }: TaskDetailModalProps)
                           marginBottom: '4px',
                         }}>
                           <span style={{
-                            fontSize: '13px',
+                            fontSize: '12px',
                             fontWeight: 600,
                             color: 'var(--text-primary)',
+                            letterSpacing: '-0.01em',
                           }}>
                             {comment.created_by}
                           </span>
                           <span
                             style={{
-                              fontSize: '12px',
+                              fontSize: '11px',
                               color: 'var(--text-muted)',
                             }}
                             title={new Date(comment.created_at).toLocaleString()}
@@ -575,9 +599,10 @@ export default function TaskDetailModal({ task, onClose }: TaskDetailModalProps)
                           </span>
                         </div>
                         <div style={{
-                          fontSize: '14px',
+                          fontSize: '13px',
                           color: 'var(--text-secondary)',
                           lineHeight: 1.5,
+                          letterSpacing: '-0.01em',
                           whiteSpace: 'pre-wrap',
                           wordBreak: 'break-word',
                           backgroundColor: 'var(--bg-tertiary)',
@@ -616,23 +641,27 @@ export default function TaskDetailModal({ task, onClose }: TaskDetailModalProps)
                         border: '1px solid var(--border)',
                         borderRadius: 'var(--radius-md)',
                         color: 'var(--text-primary)',
-                        fontSize: '14px',
+                        fontSize: '13px',
                         resize: 'none',
                         fontFamily: 'inherit',
                         lineHeight: 1.5,
-                        transition: 'border-color 0.2s',
+                        letterSpacing: '-0.01em',
+                        transition: 'border-color 0.2s ease, box-shadow 0.2s ease',
                       }}
                       onFocus={(e) => {
                         e.currentTarget.style.borderColor = 'var(--accent)'
+                        e.currentTarget.style.boxShadow = '0 0 0 3px var(--accent-subtle), var(--shadow-glow)'
                       }}
                       onBlur={(e) => {
                         e.currentTarget.style.borderColor = 'var(--border)'
+                        e.currentTarget.style.boxShadow = 'none'
                       }}
                     />
                     <div style={{
-                      fontSize: '11px',
+                      fontSize: '10px',
                       color: 'var(--text-muted)',
                       marginTop: '4px',
+                      letterSpacing: '0',
                     }}>
                       Cmd/Ctrl+Enter to submit
                     </div>
@@ -642,34 +671,37 @@ export default function TaskDetailModal({ task, onClose }: TaskDetailModalProps)
                     disabled={isSubmitting || !newComment.trim()}
                     style={{
                       padding: '10px 18px',
-                      backgroundColor: newComment.trim() ? 'var(--accent)' : 'var(--bg-tertiary)',
+                      background: newComment.trim() ? 'var(--gradient-brand)' : 'var(--bg-tertiary)',
                       color: newComment.trim() ? '#fff' : 'var(--text-muted)',
                       border: 'none',
                       borderRadius: 'var(--radius-md)',
-                      fontSize: '14px',
+                      fontSize: '13px',
                       fontWeight: 600,
                       cursor: isSubmitting || !newComment.trim() ? 'not-allowed' : 'pointer',
-                      transition: 'all 0.2s',
+                      transition: 'all 0.2s ease',
                       marginBottom: '20px',
                       opacity: isSubmitting ? 0.7 : 1,
                       display: 'flex',
                       alignItems: 'center',
                       gap: '6px',
+                      letterSpacing: '-0.01em',
                     }}
                     onMouseEnter={(e) => {
                       if (newComment.trim() && !isSubmitting) {
-                        e.currentTarget.style.backgroundColor = 'var(--accent-hover)'
+                        e.currentTarget.style.opacity = '0.9'
+                        e.currentTarget.style.transform = 'translateY(-1px)'
                       }
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = newComment.trim() ? 'var(--accent)' : 'var(--bg-tertiary)'
+                      e.currentTarget.style.opacity = isSubmitting ? '0.7' : '1'
+                      e.currentTarget.style.transform = 'translateY(0)'
                     }}
                   >
                     {isSubmitting && (
                       <span style={{
                         display: 'inline-block',
-                        width: '14px',
-                        height: '14px',
+                        width: '12px',
+                        height: '12px',
                         border: '2px solid rgba(255,255,255,0.3)',
                         borderTopColor: '#fff',
                         borderRadius: '50%',
@@ -695,10 +727,11 @@ export default function TaskDetailModal({ task, onClose }: TaskDetailModalProps)
                   textAlign: 'center',
                   padding: '32px',
                   color: 'var(--text-muted)',
+                  fontSize: '12px',
                 }}>
                   <div style={{
-                    width: '24px',
-                    height: '24px',
+                    width: '20px',
+                    height: '20px',
                     border: '2px solid var(--bg-tertiary)',
                     borderTopColor: 'var(--accent)',
                     borderRadius: '50%',
@@ -712,9 +745,10 @@ export default function TaskDetailModal({ task, onClose }: TaskDetailModalProps)
                   textAlign: 'center',
                   padding: '40px 20px',
                   color: 'var(--text-muted)',
-                  fontSize: '14px',
+                  fontSize: '13px',
+                  letterSpacing: '-0.01em',
                 }}>
-                  <p style={{ fontSize: '28px', marginBottom: '8px' }}>📋</p>
+                  <p style={{ fontSize: '24px', marginBottom: '8px', opacity: 0.6 }}>📋</p>
                   <p>No history for this task yet.</p>
                 </div>
               ) : (
@@ -727,11 +761,11 @@ export default function TaskDetailModal({ task, onClose }: TaskDetailModalProps)
                   {/* Timeline line */}
                   <div style={{
                     position: 'absolute',
-                    left: '15px',
+                    left: '13px',
                     top: '20px',
                     bottom: '20px',
-                    width: '2px',
-                    backgroundColor: 'var(--border-subtle)',
+                    width: '1px',
+                    backgroundColor: 'var(--border)',
                   }} />
 
                   {activities.map((activity) => (
@@ -740,21 +774,21 @@ export default function TaskDetailModal({ task, onClose }: TaskDetailModalProps)
                       style={{
                         display: 'flex',
                         gap: '12px',
-                        padding: '10px 0',
+                        padding: '8px 0',
                         alignItems: 'flex-start',
                         position: 'relative',
                       }}
                     >
                       {/* Timeline dot */}
                       <div style={{
-                        width: '32px',
-                        height: '32px',
+                        width: '28px',
+                        height: '28px',
                         borderRadius: '50%',
-                        backgroundColor: `${getActivityColor(activity.type)}15`,
+                        backgroundColor: `${getActivityColor(activity.type)}14`,
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        fontSize: '14px',
+                        fontSize: '12px',
                         flexShrink: 0,
                         zIndex: 1,
                         border: '2px solid var(--bg-secondary)',
@@ -771,14 +805,15 @@ export default function TaskDetailModal({ task, onClose }: TaskDetailModalProps)
                           flexWrap: 'wrap',
                         }}>
                           <span style={{
-                            fontSize: '13px',
+                            fontSize: '12px',
                             fontWeight: 600,
                             color: getActivityColor(activity.type),
+                            letterSpacing: '-0.01em',
                           }}>
                             {getActivityLabel(activity.type)}
                           </span>
                           <span style={{
-                            fontSize: '12px',
+                            fontSize: '11px',
                             color: 'var(--text-muted)',
                           }}
                             title={new Date(activity.created_at).toLocaleString()}
@@ -790,27 +825,28 @@ export default function TaskDetailModal({ task, onClose }: TaskDetailModalProps)
                         {/* Status change */}
                         {activity.from_status && activity.to_status && (
                           <div style={{
-                            fontSize: '13px',
+                            fontSize: '12px',
                             color: 'var(--text-muted)',
                             marginTop: '4px',
                             display: 'flex',
                             alignItems: 'center',
                             gap: '6px',
+                            letterSpacing: '-0.01em',
                           }}>
                             <span style={{
-                              padding: '1px 6px',
-                              borderRadius: '4px',
+                              padding: '1px 8px',
+                              borderRadius: 'var(--radius-sm)',
                               backgroundColor: 'var(--bg-tertiary)',
-                              fontSize: '12px',
+                              fontSize: '11px',
                             }}>
                               {formatStatus(activity.from_status)}
                             </span>
-                            <span>→</span>
+                            <span style={{ color: 'var(--text-muted)' }}>→</span>
                             <span style={{
-                              padding: '1px 6px',
-                              borderRadius: '4px',
+                              padding: '1px 8px',
+                              borderRadius: 'var(--radius-sm)',
                               backgroundColor: 'var(--bg-tertiary)',
-                              fontSize: '12px',
+                              fontSize: '11px',
                             }}>
                               {formatStatus(activity.to_status)}
                             </span>
@@ -820,16 +856,17 @@ export default function TaskDetailModal({ task, onClose }: TaskDetailModalProps)
                         {/* Created in status */}
                         {activity.type === 'task_created' && activity.to_status && !activity.from_status && (
                           <div style={{
-                            fontSize: '13px',
+                            fontSize: '12px',
                             color: 'var(--text-muted)',
                             marginTop: '4px',
+                            letterSpacing: '-0.01em',
                           }}>
                             Added to{' '}
                             <span style={{
-                              padding: '1px 6px',
-                              borderRadius: '4px',
+                              padding: '1px 8px',
+                              borderRadius: 'var(--radius-sm)',
                               backgroundColor: 'var(--bg-tertiary)',
-                              fontSize: '12px',
+                              fontSize: '11px',
                             }}>
                               {formatStatus(activity.to_status)}
                             </span>
@@ -839,10 +876,11 @@ export default function TaskDetailModal({ task, onClose }: TaskDetailModalProps)
                         {/* Details */}
                         {activity.details && (
                           <div style={{
-                            fontSize: '13px',
+                            fontSize: '12px',
                             color: 'var(--text-muted)',
                             marginTop: '4px',
                             fontStyle: 'italic',
+                            letterSpacing: '-0.01em',
                           }}>
                             {activity.details}
                           </div>
@@ -850,7 +888,7 @@ export default function TaskDetailModal({ task, onClose }: TaskDetailModalProps)
 
                         {/* User */}
                         <div style={{
-                          fontSize: '12px',
+                          fontSize: '11px',
                           color: 'var(--text-muted)',
                           marginTop: '4px',
                         }}>
